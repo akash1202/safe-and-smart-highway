@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
+    defaultConfig {
+        applicationId "com.example.akash.myhighway"
+        minSdkVersion 21
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    //noinspection GradleCompatible
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:support-v4:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:26.+'
+    compile 'com.android.support:recyclerview-v7:26.+' //for recycler view
+    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
+    compile 'com.google.android.gms:play-services-places:11.6.2'
+    compile 'com.google.android.gms:play-services-maps:11.6.2'
+    compile 'com.google.android.gms:play-services-nearby:11.6.2'
+    compile 'com.google.firebase:firebase-auth:11.6.2' //for google authentication online
+    compile 'com.google.android.gms:play-services-auth:11.6.2' //for google authentication offline
+    compile 'com.google.firebase:firebase-core:11.6.2' //for notification
+    compile 'com.google.firebase:firebase-messaging:11.6.2' //for notification
+    compile 'de.hdodenhof:circleimageview:2.2.0'    // for circle image
+    compile 'com.squareup.picasso:picasso:2.5.2' // for image load
+    compile 'com.android.volley:volley:1.1.0' //for request and response
+    compile 'com.google.firebase:firebase-database:11.6.2' // for messaging using realtime db
+    compile 'com.firebaseui:firebase-ui-database:0.4.4' //
+    testCompile 'junit:junit:4.12'
+}
+apply plugin: 'com.google.gms.google-services'

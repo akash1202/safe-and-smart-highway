@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingHorizontal="25dp"
+    tools:context="com.example.akash.myhighway.Register">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:text="Register"
+        android:textSize="50sp"
+        android:layout_marginTop="25dp"
+        android:gravity="center_horizontal"
+        android:textColor="@color/colorWhatsapp"
+        android:textStyle="bold"
+        android:layout_marginBottom="25dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="25sp"
+        android:hint="Full Name"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/fullnameregister"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="textEmailAddress"
+        android:textSize="25sp"
+        android:hint="Email Address"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/emailregister"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:inputType="date"
+        android:textSize="25sp"
+        android:hint="Birth Date: DD/MM/YYYY"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/dobregister"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="25sp"
+        android:hint="Your Device Id"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/deviceidregister"
+        />
+    <CalendarView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+    </CalendarView>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="25sp"
+        android:hint="Password"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/passwordregister"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="25sp"
+        android:hint="Confirm Password"
+        android:maxLines="1"
+        android:scrollHorizontally="true"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/conpasswordregister"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Register"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/registerButton"
+        />
+</LinearLayout>
+</ScrollView>

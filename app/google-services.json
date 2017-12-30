@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "211912352150",
+    "firebase_url": "https://myhighway-4c831.firebaseio.com",
+    "project_id": "myhighway-4c831",
+    "storage_bucket": "myhighway-4c831.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211912352150:android:452a7e48852daab4",
+        "android_client_info": {
+          "package_name": "com.example.akash.myhighway"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211912352150-8cc40nh92r84jk1no3lpp9g0dmiht8dt.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.akash.myhighway",
+            "certificate_hash": "e1aa6f2e15a0fcca0468740d5e769aac0283dfa8"
+          }
+        },
+        {
+          "client_id": "211912352150-se7p65kc5bbb1veqd08igj16banpdu1q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.akash.myhighway",
+            "certificate_hash": "7417a472ef4f1a6388e9ba144da4f4914e96edec"
+          }
+        },
+        {
+          "client_id": "211912352150-5pt7f7tap308lumleknd3sihke6s8od9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCShmSYcH2oQfxZkMwJTeGURPXi_Rwogs4"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211912352150-5pt7f7tap308lumleknd3sihke6s8od9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/chatrelative"
+    tools:context="com.example.akash.myhighway.chatActivity">
+<android.support.v7.widget.RecyclerView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_above="@id/chatpanel"
+    android:id="@+id/recyclerviewofmessage"
+    >
+</android.support.v7.widget.RecyclerView>
+<LinearLayout
+    android:id="@+id/chatpanel"
+    android:layout_width="match_parent"
+    android:layout_height="50dp"
+    android:layout_alignParentBottom="true"
+    android:weightSum="1"
+    android:padding="5dp"
+    >
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.2"
+        android:id="@+id/typedMessage" />
+    <Button
+        android:text="Send"
+        android:textColor="@color/colorWhatsapp"
+        android:textAllCaps="false"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.8"
+        android:id="@+id/sendMessageButton"
+        />
+</LinearLayout>
+</RelativeLayout>

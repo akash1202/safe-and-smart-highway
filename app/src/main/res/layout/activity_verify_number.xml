@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    tools:context="com.example.akash.myhighway.verify_number">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Verify Number:"
+        android:textSize="30sp"
+        android:layout_marginTop="25dp"
+        android:textColor="@color/colorWhatsapp"
+        android:textStyle="bold"
+        android:layout_marginBottom="70dp"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:gravity="center"
+        android:inputType="phone"
+        android:hint="Mobile Number"
+        android:id="@+id/mobnotextverify"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Send OTP"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/sendotpButtonverify"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="20sp"
+        android:hint="OTP"
+        android:inputType="phone"
+        android:gravity="center"
+        android:id="@+id/otpcodetextverify"
+        />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="Verify"
+        android:textSize="20sp"
+        android:textAllCaps="false"
+        android:textStyle="bold"
+        android:textColor="@color/colorWhatsapp"
+        android:id="@+id/verifyButtonverify"
+        />
+</LinearLayout>
