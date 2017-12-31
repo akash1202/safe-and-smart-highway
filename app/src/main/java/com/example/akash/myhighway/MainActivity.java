@@ -4,6 +4,8 @@ import android.*;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     SignInButton gmailButton;
     CallbackManager callbackManager;
     LoginButton loginButton;
+    MyAsyncTask task=new MyAsyncTask();
     URL profilePicture;
     String UserId,first_name,last_name,email,birthday,gender,s1="",s2="",s3="",s4="";
     private String PREFRENCENAME="MYHIGHWAY";
@@ -96,7 +99,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.statusbarmatchingcolor1));
 
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
-
+        task.execute();
         e1=(EditText) findViewById(R.id.userText);
         e2=(EditText) findViewById(R.id.passwordText);
         logincustomButton.setOnClickListener(new View.OnClickListener() {
@@ -324,9 +327,23 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 });
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode==1){
+            if(grantResults[0]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Gps access for Better result!",Toast.LENGTH_SHORT).show();
+                (new MyAsyncTask()).execute();
+            }
+            if(grantResults[1]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
+                (new MyAsyncTask()).execute();
+            }
+        }
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     public void SSHSLogin(String email,String name,String imageURL,int type){
         Intent intentforLogin=new Intent(this,testIt.class);
-        ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS},1);
         SharedPreferences.Editor editor=sharedPreferences.edit();
         switch (type) {
             case GOOGLE_LOGIN:
@@ -354,5 +371,29 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         Toast.makeText(this,"Go...",Toast.LENGTH_SHORT).show();
         startActivity(intentforLogin);
        // finish();
+    }
+
+    public class MyAsyncTask extends AsyncTask<String,String,String>{
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS},1);
+            return null;
+        }
     }
 }
