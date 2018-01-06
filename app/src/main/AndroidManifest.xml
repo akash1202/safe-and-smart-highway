@@ -96,7 +96,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".chatActivity"
+        <activity
+            android:name=".chatActivity"
             android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -104,6 +105,23 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.onegravity.contactpicker.core.ContactPickerActivity"
+            android:enabled="true"
+            android:exported="false">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".Aboutus"
+            android:parentActivityName=".testIt">
+            <meta-data
+                android:name="android.spport.PARENT_ACTIVITY"
+                android:value=".testIt" />
+        </activity>
+        <activity android:name=".Friends"></activity>
     </application>
 
 </manifest>

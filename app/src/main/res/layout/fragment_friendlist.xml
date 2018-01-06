@@ -9,7 +9,7 @@
         android:layout_marginTop="200dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="This is Fragment for generate Bill" />
+        android:text="This is Fragment for friend list" />
     <android.support.v7.widget.ListViewCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"

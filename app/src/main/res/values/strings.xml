@@ -22,6 +22,8 @@
 
     <string name="draweropen_desc">open</string>
     <string name="drawerclose_desc">close</string>
+
+    <string name="aboutus1">We are here for Your Safety and Security Suggest us Your new Idea for Improvements.. </string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>

@@ -2,26 +2,23 @@ package com.example.akash.myhighway;
 
 
 import android.*;
-import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.provider.ContactsContract;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,6 +29,7 @@ import android.support.v7.widget.Toolbar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.location.places.GeoDataClient;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -41,18 +39,17 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.FirebaseInstanceIdService;
+import com.onegravity.contactpicker.contact.ContactDescription;
+import com.onegravity.contactpicker.contact.ContactSortOrder;
+import com.onegravity.contactpicker.core.ContactPickerActivity;
+import com.onegravity.contactpicker.picture.ContactPictureType;
 import com.squareup.picasso.Picasso;
-
-import java.net.URI;
-import java.security.Permission;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class testIt extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener{
 private static final String TAG="mainActivity";
+
     Button b1,updateLocation,getPlaceButton;
     TextView t1,t2,prEmail,prName;
     CircleImageView prPhoto;
@@ -63,7 +60,10 @@ private static final String TAG="mainActivity";
     GeoDataClient geoDataClient;
     GoogleMap googleMap;
     SupportMapFragment supportMapFragment;
+    SharedPreferences sharedPreferences;
+    String PREFRENCENAME="AKASHHIGHWAY";
     int PICK_CONTACT=3;
+    static final int REQUEST_CONTACT=11;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,12 +111,12 @@ private static final String TAG="mainActivity";
         prName=header.findViewById(R.id.prName);
         prEmail=header.findViewById(R.id.prEmail);
         prPhoto=(CircleImageView) header.findViewById(R.id.profileImage);
-
-        FirebaseUser user=FirebaseAuth.getInstance().getCurrentUser();
-        String userEmail=getIntent().getStringExtra("email");
-        String userName=getIntent().getStringExtra("userName");
+    //sharedPreferences.getString("emailkey","")!=null&&sharedPreferences.getString("usernamekey","")!=null&&sharedPreferences.getString("imageURLkey","")!=null
+        sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
+        String userEmail=sharedPreferences.getString("emailkey","");
+        String userName=sharedPreferences.getString("usernamekey","");
+        String userImageURLs=sharedPreferences.getString("imageURLkey","");
         Toast.makeText(this,"mail:"+userEmail+"  name:"+userName,Toast.LENGTH_SHORT).show();
-        String userImageURLs=getIntent().getStringExtra("imageURL");
         if(userImageURLs!=null) {
             Uri myuri = Uri.parse(userImageURLs);
             try {
@@ -210,17 +210,21 @@ private static final String TAG="mainActivity";
                 break;
             }
             case R.id.logout: {
+                sharedPreferences.edit().clear().commit();
                 FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
                 startActivity(new Intent(this,MainActivity.class));
                 finish();
                 break;
             }
             case R.id.friendlist: {
-                Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-                startActivityForResult(intent,PICK_CONTACT);
+                /*Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
+                startActivityForResult(intent,PICK_CONTACT);*/
+                startActivity(new Intent(testIt.this,Friends.class));
                 break;
             }
             case R.id.aboutus:{
+                startActivity(new Intent(testIt.this,Aboutus.class));
                 break;
             }
             default: break;
@@ -239,23 +243,27 @@ private static final String TAG="mainActivity";
     public boolean onOptionsItemSelected(MenuItem item) {
         int id=item.getItemId();
     if(id==R.id.idaddfriend_option){
-        Intent intent = new Intent(Intent.ACTION_PICK, ContactsContract.Contacts.CONTENT_URI);
-        startActivityForResult(intent,PICK_CONTACT);
+
+        Intent intent = new Intent(testIt.this,Friends.class);
+        startActivity(intent);
     }
     if(id==R.id.idshareIt){
         Intent myShareIntent=new Intent(Intent.ACTION_SEND);
         String subject="Subject of Sharing";
-        String body="this is Body written by Akash";
+        String body="Download this Awesome SASH App For Safety and Security of you,Your friends and for your family member link:http://www.ababab.com/abab";
         myShareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
         myShareIntent.putExtra(Intent.EXTRA_TEXT,body);
-        startActivity(Intent.createChooser(myShareIntent,"Share My Highway message to"));
+        myShareIntent.setType("text/plain");
+        startActivity(Intent.createChooser(myShareIntent,"Share SSHS Using"));
     }
     if(id==R.id.idinfo){
         Intent myInfoIntent=new Intent(Intent.ACTION_SHOW_APP_INFO);
         startActivity(myInfoIntent);
     }
     if(id==R.id.idlogout){
+        sharedPreferences.edit().clear().commit();
         FirebaseAuth.getInstance().signOut();
+        LoginManager.getInstance().logOut();
         startActivity(new Intent(this,MainActivity.class));
         finish();
     }

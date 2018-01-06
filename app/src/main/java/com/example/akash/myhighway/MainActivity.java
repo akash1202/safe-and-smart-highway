@@ -54,6 +54,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.squareup.picasso.Picasso;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     MyAsyncTask task=new MyAsyncTask();
     URL profilePicture;
     String UserId,first_name,last_name,email,birthday,gender,s1="",s2="",s3="",s4="";
-    private String PREFRENCENAME="MYHIGHWAY";
+    private String PREFRENCENAME="AKASHHIGHWAY";
     Intent i1;
     SharedPreferences sharedPreferences;
     @Override
@@ -99,6 +100,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.statusbarmatchingcolor1));
 
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
+        if(!sharedPreferences.getString("emailkey","").equals("")||!sharedPreferences.getString("usernamekey","").equals("")||!sharedPreferences.getString("imageURLkey","").equals("")){
+            startActivity(new Intent(MainActivity.this,testIt.class));
+        }
         task.execute();
         e1=(EditText) findViewById(R.id.userText);
         e2=(EditText) findViewById(R.id.passwordText);
@@ -318,6 +322,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Toast.makeText(getApplicationContext(),"Signed in...",Toast.LENGTH_LONG).show();
                             //prPhoto.setImageURI(fbauth.getCurrentUser().getPhotoUrl());
                             FirebaseUser user =fbauth.getCurrentUser();
+                            MyAsyncTask as=new MyAsyncTask();
                             SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),GOOGLE_LOGIN);
                         }
                         else{
@@ -374,6 +379,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     }
 
     public class MyAsyncTask extends AsyncTask<String,String,String>{
+       // AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
 
         @Override
         protected void onPreExecute() {
@@ -393,7 +399,22 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         @Override
         protected String doInBackground(String... strings) {
             ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS},1);
+           /* showProgressbar(2);
+            try {
+                Thread.sleep(3*1000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finally {
+            loader.hide();
+            }*/
             return null;
+        }
+        public void showProgressbar(int seconds){
+            /*loader.setClickable(false);
+            loader.setIndicatorColor(getResources().getColor(R.color.colorWhatsapp));
+            loader.show();*/
         }
     }
 }

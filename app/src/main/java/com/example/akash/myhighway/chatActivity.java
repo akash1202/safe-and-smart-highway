@@ -13,8 +13,11 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 
 public class chatActivity extends AppCompatActivity {
@@ -22,7 +25,7 @@ public class chatActivity extends AppCompatActivity {
     private EditText eMessage;
     private RecyclerView MessageList;
     private Button sendMessage;
-    private DatabaseReference databaseReference;
+    private DatabaseReference databaseReference,databaseReference1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,6 +39,7 @@ public class chatActivity extends AppCompatActivity {
         MessageList.setLayoutManager(linearLayoutManager);
 
         databaseReference= FirebaseDatabase.getInstance().getReference().child("message");
+        databaseReference1= FirebaseDatabase.getInstance().getReference().child("userid");
 
 
 
@@ -44,6 +48,7 @@ public class chatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String messageValue=eMessage.getText().toString();
                 final DatabaseReference newMessage=databaseReference.push();
+                final DatabaseReference newUser=databaseReference1.push();
                 newMessage.child("content").setValue(messageValue);
              MessageList.scrollToPosition(MessageList.getAdapter().getItemCount());
             }

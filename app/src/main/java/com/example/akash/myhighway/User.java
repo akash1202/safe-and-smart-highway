@@ -5,36 +5,21 @@ package com.example.akash.myhighway;
  */
 
 public class User {
+
+
+
+    private String userId;          //Unique Id as a Key
     private String userName;
     private String userEmail;
     private String userphotoURi;
     private String userMobNumber;
     private String userDevicenumber;
-    private String lastLocation;
+    private double lastLocationLong;
+    private double lastLocationLat;
 
-    public String getUserMobNumber() {
-        return userMobNumber;
-    }
+    public String getUserId() {   return userId;    }
 
-    public void setUserMobNumber(String userMobNumber) {
-        this.userMobNumber = userMobNumber;
-    }
-
-    public String getUserDevicenumber() {
-        return userDevicenumber;
-    }
-
-    public void setUserDevicenumber(String userDevicenumber) {
-        this.userDevicenumber = userDevicenumber;
-    }
-
-    public String getLastLocation() {
-        return lastLocation;
-    }
-
-    public void setLastLocation(String lastLocation) {
-        this.lastLocation = lastLocation;
-    }
+    public void setUserId(String userId) {  this.userId = userId;    }
 
     public String getUserName() {
         return userName;
@@ -59,4 +44,26 @@ public class User {
     public void setUserphotoURi(String userphotoURi) {
         this.userphotoURi = userphotoURi;
     }
+
+    public String getUserMobNumber() {
+        return userMobNumber;
+    }
+
+    public void setUserMobNumber(String userMobNumber) {
+        this.userMobNumber = userMobNumber;
+    }
+
+    public String getUserDevicenumber() {
+        return userDevicenumber;
+    }
+
+    public void setUserDevicenumber(String userDevicenumber) { this.userDevicenumber = userDevicenumber;    }
+
+    public double getLastLocationLong() {  return lastLocationLong;   }
+
+    public void setLastLocationLong(double lastLocationLong) {   this.lastLocationLong = lastLocationLong;    }
+
+    public double getLastLocationLat() {    return lastLocationLat;    }
+
+    public void setLastLocationLat(double lastLocationLat) {    this.lastLocationLat = lastLocationLat;    }
 }
