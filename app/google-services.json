@@ -8,12 +8,20 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:638126602376:android:452a7e48852daab4",
+        "mobilesdk_app_id": "1:638126602376:android:b31983445ec264b7",
         "android_client_info": {
-          "package_name": "com.example.akash.myhighway"
+          "package_name": "com.example.akash.myhighway1"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "638126602376-mcd80vgnbe9l7evmsu3gqpbfek3qf643.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.akash.myhighway1",
+            "certificate_hash": "4e063a8dcbc9f05bcf896783f640ff521e8b3528"
+          }
+        },
         {
           "client_id": "638126602376-i4g31tm0bd2nae352diqs900vl440ttl.apps.googleusercontent.com",
           "client_type": 3
@@ -29,8 +37,13 @@
           "status": 1
         },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "638126602376-i4g31tm0bd2nae352diqs900vl440ttl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         },
         "ads_service": {
           "status": 2

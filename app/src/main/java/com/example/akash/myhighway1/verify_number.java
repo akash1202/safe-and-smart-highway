@@ -1,6 +1,5 @@
-package com.example.akash.myhighway;
+package com.example.akash.myhighway1;
 
-import android.*;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;

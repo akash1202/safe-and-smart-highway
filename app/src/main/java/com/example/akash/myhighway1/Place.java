@@ -1,9 +1,8 @@
-package com.example.akash.myhighway;
+package com.example.akash.myhighway1;
 
 /**
  * Created by Vishal on 1/24/2018.
  */
-import android.location.Location;
 import org.json.JSONObject;
 public class Place {
     public int id;

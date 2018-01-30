@@ -10,7 +10,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:paddingHorizontal="25dp"
-    tools:context="com.example.akash.myhighway.Register">
+    tools:context="com.example.akash.myhighway1.Register">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="80dp"

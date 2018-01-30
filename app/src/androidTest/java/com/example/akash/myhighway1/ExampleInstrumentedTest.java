@@ -1,4 +1,4 @@
-package com.example.akash.myhighway;
+package com.example.akash.myhighway1;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

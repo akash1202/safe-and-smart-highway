@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:id="@+id/mainContainer1"
     android:layout_height="match_parent"
-    tools:context="com.example.akash.myhighway.Friends">
+    tools:context="com.example.akash.myhighway1.Friends">
 <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,7 +25,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    tools:context="com.example.akash.myhighway.Friends">
+    tools:context="com.example.akash.myhighway1.Friends">
     <Button
         android:layout_marginTop="?attr/actionBarSize"
         android:id="@+id/addfriendButton"

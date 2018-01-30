@@ -1,18 +1,16 @@
-package com.example.akash.myhighway;
+package com.example.akash.myhighway1;
 
 import android.location.Location;
 import android.location.LocationListener;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.View;
 
-import com.example.akash.myhighway.POJO.Example;
+import com.example.akash.myhighway1.POJO.Example;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;

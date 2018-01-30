@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:background="@drawable/highway1"
     android:scaleType="fitXY"
-    tools:context="com.example.akash.myhighway.Splash">
+    tools:context="com.example.akash.myhighway1.Splash">
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

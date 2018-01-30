@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:id="@+id/drawerLayout"
     android:orientation="vertical"
-    tools:context="com.example.akash.myhighway.testIt"
+    tools:context="com.example.akash.myhighway1.testIt"
     tools:openDrawer="start" >   <!-- fitsystem for fullscreen -->
 
     <include layout="@layout/app_bar"

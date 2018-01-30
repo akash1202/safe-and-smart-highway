@@ -17,9 +17,10 @@ allprojects {
         jcenter()
         maven {
             url 'http://dl.bintray.com/amulyakhare/maven' //for dynamic image
-            url "https://maven.google.com" // Google's Maven repository
+
         }
 
+        maven { url "https://maven.google.com"}  // Google's Maven repository}
     }
 }
 

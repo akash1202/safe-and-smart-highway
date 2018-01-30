@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:id="@+id/mainContainer"
     android:layout_height="match_parent"
-    tools:context="com.example.akash.myhighway.testIt">
+    tools:context="com.example.akash.myhighway1.testIt">
     <include layout="@layout/content_home"/>
 <android.support.design.widget.AppBarLayout
     android:layout_width="match_parent"

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.akash.myhighway">
+    package="com.example.akash.myhighway1">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -22,7 +22,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".Splash"
+            android:name="com.example.akash.myhighway1.Splash"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.akash.myhighway1.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -56,9 +56,9 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Register"
+            android:name="com.example.akash.myhighway1.Register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".verify_number">
+        <activity android:name="com.example.akash.myhighway1.verify_number">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -66,7 +66,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".testIt"
+            android:name="com.example.akash.myhighway1.testIt"
             android:label="SSHS"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -76,12 +76,12 @@
             </intent-filter>
         </activity>
 
-        <service android:name=".MyFirebaseMessagingService">
+        <service android:name="com.example.akash.myhighway1.MyFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-        <service android:name=".MyFirebaseInstanceIDService">
+        <service android:name="com.example.akash.myhighway1.MyFirebaseInstanceIDService">
             <intent-filter>
                 <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
@@ -95,7 +95,7 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".MapsActivity"
+            android:name="com.example.akash.myhighway1.MapsActivity"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -104,8 +104,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".chatActivity"
-            android:parentActivityName=".MainActivity">
+            android:name="com.example.akash.myhighway1.chatActivity"
+            android:parentActivityName="com.example.akash.myhighway1.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -122,23 +122,23 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".Aboutus"
-            android:parentActivityName=".testIt">
+            android:name="com.example.akash.myhighway1.Aboutus"
+            android:parentActivityName="com.example.akash.myhighway1.testIt">
             <meta-data
                 android:name="android.spport.PARENT_ACTIVITY"
                 android:value=".testIt" />
         </activity>
         <activity
-            android:name=".Friends"
+            android:name="com.example.akash.myhighway1.Friends"
             android:theme="@style/AppTheme.NoActionBar" />
 
-        <receiver android:name=".SmsReceiver">
+        <receiver android:name="com.example.akash.myhighway1.SmsReceiver">
             <intent-filter>
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".ForwardTo">
+        <activity android:name="com.example.akash.myhighway1.ForwardTo">
             <meta-data
                 android:name="android.spport.PARENT_ACTIVITY"
                 android:value=".testIt" />
@@ -148,7 +148,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Dashboard"
+        <activity android:name="com.example.akash.myhighway1.Dashboard"
             android:theme="@style/AppTheme.NoActionBar"
             >
             <meta-data

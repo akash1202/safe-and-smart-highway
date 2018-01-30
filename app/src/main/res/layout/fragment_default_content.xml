@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.akash.myhighway.DefaultContentFragment"
+    tools:context="com.example.akash.myhighway1.DefaultContentFragment"
     android:layout_marginTop="305dp"
     >
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
