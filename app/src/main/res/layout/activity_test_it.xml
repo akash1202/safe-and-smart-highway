@@ -8,7 +8,6 @@
     android:id="@+id/drawerLayout"
     android:orientation="vertical"
     tools:context="com.example.akash.myhighway.testIt"
-    android:fitsSystemWindows="true"
     tools:openDrawer="start" >   <!-- fitsystem for fullscreen -->
 
     <include layout="@layout/app_bar"
@@ -28,7 +27,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:layout_marginLeft="15dp"
-        android:fitsSystemWindows="true"
         app:headerLayout="@layout/header_navigation"
         app:itemIconTint="@color/colorWhatsapp"
         app:itemTextColor="@color/colorWhatsapp"

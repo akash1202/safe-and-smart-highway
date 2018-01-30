@@ -2,14 +2,13 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="wrap_content"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fcard"
     card_view:cardCornerRadius="10dp"
     card_view:cardBackgroundColor="#ffffff"
     card_view:cardElevation="5dp"
-    card_view:cardUseCompatPadding="true"
-    >
+    card_view:cardUseCompatPadding="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:orientation="horizontal"
@@ -19,7 +18,7 @@
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/fimage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:src="@drawable/com_facebook_profile_picture_blank_portrait"
         card_view:civ_border_color="@color/colorWhatsapp"
         card_view:civ_border_width="3dp"
@@ -32,6 +31,13 @@
         android:layout_height="match_parent"
         android:weightSum="10"
         android:layout_gravity="center_vertical"
+        ><LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:paddingRight="3dp"
+        android:weightSum="10"
         >
         <TextView
             android:id="@+id/fname"
@@ -41,8 +47,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="gaurang babariya 12345"
-            android:layout_weight="4"
+            android:layout_weight="0.8"
             />
+        <ImageButton
+            android:id="@+id/foptions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:tint="@color/colorWhatsapp"
+            android:background="#FFFFFF"
+            android:src="@drawable/ic_more_dot_vert_black_24dp"
+            android:layout_weight="9.2"
+            />
+        <Spinner
+            android:id="@+id/fSpinner"
+            android:elevation="10dp"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
         <TextView
             android:id="@+id/fnumber"
             android:textColor="@color/colorWhatsapp"
@@ -54,14 +76,6 @@
             android:layout_weight="6"
             />
     </LinearLayout>
-        <ImageButton
-            android:id="@+id/foptions"
-            android:layout_width="10dp"
-            android:layout_height="wrap_content"
-            android:tint="@color/colorWhatsapp"
-            android:background="#FFFFFF"
-            android:layout_marginRight="15dp"
-            android:src="@drawable/ic_more_dot_vert_black_24dp"
-            />
+
     </LinearLayout>
 </android.support.v7.widget.CardView>

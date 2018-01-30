@@ -39,7 +39,7 @@ public class chatActivity extends AppCompatActivity {
         MessageList.setLayoutManager(linearLayoutManager);
 
         databaseReference= FirebaseDatabase.getInstance().getReference().child("message");
-        databaseReference1= FirebaseDatabase.getInstance().getReference().child("userid");
+       // databaseReference1= FirebaseDatabase.getInstance().getReference().child("userid");
 
 
 
@@ -48,7 +48,7 @@ public class chatActivity extends AppCompatActivity {
             public void onClick(View view) {
                 final String messageValue=eMessage.getText().toString();
                 final DatabaseReference newMessage=databaseReference.push();
-                final DatabaseReference newUser=databaseReference1.push();
+                //final DatabaseReference newUser=databaseReference1.push();
                 newMessage.child("content").setValue(messageValue);
              MessageList.scrollToPosition(MessageList.getAdapter().getItemCount());
             }
@@ -71,6 +71,7 @@ public class chatActivity extends AppCompatActivity {
             protected void populateViewHolder(MessageContainer viewHolder, Message model, int position) {
             viewHolder.setContent(model.getContent());
             }
+
         };
         MessageList.setAdapter(fbra);
     }
@@ -89,5 +90,6 @@ public class chatActivity extends AppCompatActivity {
             TextView message_user=(TextView) mView.findViewById(R.id.musernametext);
             message_user.setText(user);
         }
+
     }
 }

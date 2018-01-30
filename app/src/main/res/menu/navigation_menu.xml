@@ -5,7 +5,7 @@
 <item android:id="@+id/vehicle" android:title="My Vehicle" android:icon="@drawable/car"/>
 <item android:id="@+id/friendlist" android:title="My Friends" android:icon="@drawable/friend"/>
 <item android:id="@+id/history" android:title="My History" android:icon="@drawable/ic_history_black_24dp"/>
-<item android:id="@+id/status" android:title="Status" android:icon="@drawable/progression"/>
+<item android:id="@+id/status" android:title="Forward To" android:icon="@drawable/progression"/>
 <item android:id="@+id/logout" android:title="Logout" android:icon="@drawable/logout_sketch"/>
     <group android:id="@+id/group1">
  <item android:id="@+id/aboutus" android:title="About us" android:icon="@drawable/information"/>

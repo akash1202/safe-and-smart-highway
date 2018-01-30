@@ -1,6 +1,8 @@
 package com.example.akash.myhighway;
 
 import android.*;
+import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -12,6 +14,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -82,26 +85,30 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     CallbackManager callbackManager;
     LoginButton loginButton;
     MyAsyncTask task=new MyAsyncTask();
+    private int seconds;
+    ProgressDialog waitingDialog;
     URL profilePicture;
-    String UserId,first_name,last_name,email,birthday,gender,s1="",s2="",s3="",s4="";
-    private String PREFRENCENAME="AKASHHIGHWAY";
+    String UserId,first_name,last_name,email,birthday,gender,s1="",s2="",s3="",s4="",s5="";
+    private String PREFRENCENAME="AKASHSASH";
     Intent i1;
     SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(this);
+        AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_main);
         registerButton=(Button)findViewById(R.id.registerButton);
         logincustomButton=(Button) findViewById(R.id.loginButton);
-        Window window=this.getWindow();
+       /* Window window=this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.statusbarmatchingcolor1));
+        window.setStatusBarColor(ContextCompat.getColor(MainActivity.this,R.color.colorWhatsapp));*/
 
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
-        if(!sharedPreferences.getString("emailkey","").equals("")||!sharedPreferences.getString("usernamekey","").equals("")||!sharedPreferences.getString("imageURLkey","").equals("")){
+        if(!sharedPreferences.getString("userEmailkey","").equals("")||!sharedPreferences.getString("userNamekey","").equals("")||!sharedPreferences.getString("userPhotoURikey","").equals("")){
             startActivity(new Intent(MainActivity.this,testIt.class));
+            finish();
         }
         task.execute();
         e1=(EditText) findViewById(R.id.userText);
@@ -111,21 +118,46 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             public void onClick(View view) {
                 s1=e1.getText().toString();
                 s2=e2.getText().toString();
+                int count=0;
+                if(s1.equals("")){
+                    e1.setError("This Field is required!!");
+                    count++;
+                }
+                if(s2.equals("")){
+                    e2.setError("This Field is required!!");
+                    count++;
+                }
+                if(count==0){
+                    /*final AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
+                    loader.setIndicator("LineScalePulseOutRapidIndicator");
+                    loader.setElevation(100);
+                    loader.setVisibility(View.VISIBLE);
+                    loader.setForegroundGravity(Gravity.CENTER);
+                    loader.setIndicatorColor(R.color.colorWhatsapp);
+                    loader.setClickable(false);
+                    loader.show();*/
+                    final ProgressDialog process=new ProgressDialog(MainActivity.this);
+                    process.setMessage("Wait...");
+                    process.setCancelable(false);
+                    process.show();
                 String urlforlogin="https://myhighway.000webhostapp.com/api/login.php";
                 RequestQueue rq= Volley.newRequestQueue(getApplicationContext());
                 StringRequest sr=new StringRequest(Request.Method.POST, urlforlogin, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        //loader.hide();
+                        process.cancel();
                         JSONArray jsonArray=null;
                         try {
                             JSONObject jsonObject= new JSONObject(response);
                             s3=jsonObject.getString("msg");
                             s4=jsonObject.getString("username");
+                            s5=jsonObject.getString("userimage");
                             Log.e("response",response);
                             Toast.makeText(getApplicationContext(),""
                                     +s3,Toast.LENGTH_SHORT).show();
                             if(s3.equals("Success!!")) {
-                                SSHSLogin(s1,s4,getResources().getDrawable(R.drawable.default_profile_image).toString(),CUSTOM_LOGIN);
+                                SSHSLogin(s1,s4,s5,CUSTOM_LOGIN);
                                 /*i1 = new Intent(getApplicationContext(), testIt.class);
                                 i1.putExtra("email",s1);
                                 i1.putExtra("userName","user");
@@ -153,6 +185,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
                 };
                 rq.add(sr);
+              }         //end of if
             }});
         gmailButton= (SignInButton) findViewById(R.id.gmailButton);
         fbauth= FirebaseAuth.getInstance();
@@ -174,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getApplicationContext(),Register.class));
+                startActivity(new Intent(MainActivity.this,Register.class));
                 finish();
             }
         });
@@ -188,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-              String currentToken=  loginResult.getAccessToken().getUserId();
+             // String currentToken=  loginResult.getAccessToken().getUserId();
               handleFacebookAccessToken(loginResult.getAccessToken());
                 final GraphRequest graphRequest= GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
@@ -230,9 +263,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     }
                 });
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", "friendlist");
-                graphRequest.setParameters(parameters);
-                graphRequest.executeAsync();
+                //parameters.putString("fields", "friendlist");
+               // graphRequest.setParameters(parameters);
+               // graphRequest.executeAsync();
               Toast.makeText(getApplicationContext(),"Success facebook!",Toast.LENGTH_SHORT).show();
 
             }
@@ -244,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     FirebaseUser user=fbauth.getCurrentUser();
-                                    ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS},1);
                                     SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),FACEBOOK_LOGIN);
                                 }
                                 else {
@@ -269,7 +301,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     }
 
-    public void displayuserinfo(JSONObject object){
+   /* public void displayuserinfo(JSONObject object){
         String fname,lname,email,id,picture;
         try {
             fname=object.getString("first_name");
@@ -288,7 +320,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             e.printStackTrace();
         }
 
-    }
+    }*/
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
@@ -322,7 +354,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             Toast.makeText(getApplicationContext(),"Signed in...",Toast.LENGTH_LONG).show();
                             //prPhoto.setImageURI(fbauth.getCurrentUser().getPhotoUrl());
                             FirebaseUser user =fbauth.getCurrentUser();
-                            MyAsyncTask as=new MyAsyncTask();
                             SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),GOOGLE_LOGIN);
                         }
                         else{
@@ -343,6 +374,10 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
                 (new MyAsyncTask()).execute();
             }
+            if(grantResults[2]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide send SMS for Better result!",Toast.LENGTH_SHORT).show();
+                (new MyAsyncTask()).execute();
+            }
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
@@ -352,30 +387,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         SharedPreferences.Editor editor=sharedPreferences.edit();
         switch (type) {
             case GOOGLE_LOGIN:
-                intentforLogin.putExtra("email",email);
-                intentforLogin.putExtra("userName", name);
-                intentforLogin.putExtra("imageURL", imageURL);
                 break;
             case FACEBOOK_LOGIN:
                 Toast.makeText(this,"you needs to verify your email if null",Toast.LENGTH_SHORT).show();
-                intentforLogin.putExtra("email",email);
-                intentforLogin.putExtra("userName", name);
-                intentforLogin.putExtra("imageURL", imageURL);
                 break;
             case CUSTOM_LOGIN:
-                intentforLogin.putExtra("email",email);
-                intentforLogin.putExtra("userName", name);
-                intentforLogin.putExtra("imageURL", imageURL);
                 break;
                 default:return;
         }
-        editor.putString("emailkey",email);
-        editor.putString("usernamekey",name);
-        editor.putString("imageURLkey",imageURL);
+        editor.putString("userEmailkey",email);
+        editor.putString("userNamekey",name);
+        editor.putString("userPhotoURikey",imageURL);
         editor.commit();
         Toast.makeText(this,"Go...",Toast.LENGTH_SHORT).show();
         startActivity(intentforLogin);
-       // finish();
+        finish();
     }
 
     public class MyAsyncTask extends AsyncTask<String,String,String>{
@@ -398,7 +424,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
         @Override
         protected String doInBackground(String... strings) {
-            ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS},1);
+            ActivityCompat.requestPermissions(MainActivity.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS, Manifest.permission.SEND_SMS},1);
            /* showProgressbar(2);
             try {
                 Thread.sleep(3*1000);
@@ -415,6 +441,40 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             /*loader.setClickable(false);
             loader.setIndicatorColor(getResources().getColor(R.color.colorWhatsapp));
             loader.show();*/
+        }
+    }
+    public class WaitingTask extends AsyncTask<String,String, String> {
+       // private int seconds;
+        //ProgressDialog progressDialog;
+        public WaitingTask(int timeinSecond) {
+            seconds=timeinSecond;
+        }
+        @Override
+        protected void onPreExecute() {
+            waitingDialog=new ProgressDialog(MainActivity.this);
+            waitingDialog.setMessage("Please Wait for "+seconds+"seconds");
+            waitingDialog.setCancelable(false);
+            waitingDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+
+            try {
+                for(int i=1;i<=seconds;i++){
+                    //Thread.sleep((seconds/5)*1000);
+                    //publishProgress(5-i);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+               // waitingDialog.cancel();
+            //progressDialog.cancel();
         }
     }
 }

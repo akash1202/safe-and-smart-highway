@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="25dp"
+    tools:context="com.example.akash.myhighway.ForwardTo">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        />
+<EditText
+    android:id="@+id/forwardtoid"
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:textSize="22sp"
+    android:hint="Enter Mobile(with +91)"
+     />
+    <Button
+        android:id="@+id/forwardtoidok"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textAllCaps="false"
+        android:textSize="22sp"
+        android:text="Set It..Now"
+        />
+    <Button
+        android:id="@+id/forwardResetButton"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:textAllCaps="false"
+        android:textSize="22sp"
+        android:text="Reset"
+        />
+</LinearLayout>

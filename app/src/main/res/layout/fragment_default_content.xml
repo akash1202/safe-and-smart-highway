@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.example.akash.myhighway.DefaultContentFragment"
-    android:layout_marginBottom="250dp"
+    android:layout_marginTop="305dp"
     >
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -25,14 +25,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:layout_marginTop="55dp">
+        android:layout_marginTop="0dp">
         <Button
             android:layout_marginTop="15dp"
             android:layout_gravity="center_horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:background="@drawable/dashboard_background"
+            android:backgroundTint="@color/colorWhatsapp"
             android:id="@+id/getLocation"
-            android:text="Update Location"
+            android:text="Update"
             android:textAllCaps="false"
             />
         <LinearLayout
@@ -92,10 +94,30 @@
                 android:text="Latitude"
                 />
         </LinearLayout>
+        <TextView
+            android:layout_marginRight="10dp"
+            android:gravity="center"
+            android:id="@+id/speedText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="20sp"
+            android:text="0 km/h"
+            />
+        <TextView
+            android:gravity="center"
+            android:layout_marginRight="10dp"
+            android:id="@+id/speedTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhatsapp"
+            android:textSize="30sp"
+            android:text="Speed"
+            />
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/livefriends"
+            android:visibility="gone"
             >
 
         </android.support.v7.widget.RecyclerView>

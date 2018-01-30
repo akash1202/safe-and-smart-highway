@@ -43,16 +43,18 @@
         android:textColor="@color/colorWhatsapp"
         android:id="@+id/emailregister"
         />
+
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:inputType="date"
         android:textSize="25sp"
-        android:hint="Birth Date: DD/MM/YYYY"
+        android:hint="Birth date:dd/mm/yyyy"
         android:maxLines="1"
         android:scrollHorizontally="true"
         android:textColor="@color/colorWhatsapp"
         android:id="@+id/dobregister"
+        android:clickable="true"
         />
     <EditText
         android:layout_width="match_parent"

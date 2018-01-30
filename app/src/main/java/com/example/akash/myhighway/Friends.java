@@ -2,12 +2,24 @@ package com.example.akash.myhighway;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.provider.ContactsContract;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Adapter;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,14 +37,24 @@ import java.util.List;
 public class Friends extends AppCompatActivity {
 
     ListView listView;
+    GridView gridView;
     Button addmore;
-    String[] name12,number12,image12;
+    String[] name1,number1,image1;
+    String[] options={"View","Remove","Chat"};
     public static final int REQUEST_CONTACT=12;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friends);
        listView=(ListView) findViewById(R.id.flistview);
+        //registerForContextMenu(listView);
+       //gridView=(GridView) findViewById(R.id.fgridview);
+       //listView.setVisibility(View.INVISIBLE);
+        Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar1);
+        //getActionBar().setCustomView(t);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Friends");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
        addmore= (Button)findViewById(R.id.addfriendButton);
        addmore.setOnClickListener(new View.OnClickListener() {
            @Override
@@ -52,10 +74,9 @@ public class Friends extends AppCompatActivity {
        String[] name={"akash","vishal","gaurang"};
        String[] number={"9016435625","9510030257","8530123135"};
        String[] image={"9016435625","9510030257","8530123135"};
-        name12=name;
-        number12=number;
-        image12=image;
-
+       // name12=name;
+      //  number12=number;
+        //image12=image;
     }
 
     @Override
@@ -64,9 +85,9 @@ public class Friends extends AppCompatActivity {
                 data != null && data.hasExtra(ContactPickerActivity.RESULT_CONTACT_DATA)) {
 
             // we got a result from the contact picker
-            String[] name1;
+           /* String[] name1;
             String[] number1;
-            String[] image1;
+            String[] image1;*/
 
             // process contacts
             List<Contact> contacts = (List<Contact>) data.getSerializableExtra(ContactPickerActivity.RESULT_CONTACT_DATA);
@@ -79,10 +100,10 @@ public class Friends extends AppCompatActivity {
                 name1[i]=contact.getDisplayName();
                 number1[i]=contact.getPhone(0).toString();
                 //Toast.makeText(this,"image:"+contact.getPhotoUri().toString(),Toast.LENGTH_LONG).show();
-//                if(contact.getPhotoUri().equals(""))
+                if(contact.getPhotoUri()==null)
                 image1[i]="";
-                /*else
-                    image1[i]=contact.getPhotoUri().toString();*/
+                else
+                    image1[i]=contact.getPhotoUri().toString();
                 i++;
             }
 
@@ -95,14 +116,43 @@ public class Friends extends AppCompatActivity {
                 for (Contact contact : contacts1) {
                     name1[j]=contact.getDisplayName();
                     number1[j]=contact.getPhone(0).toString();
+                    if(contact.getPhotoUri()==null)
+                        image1[j]="";
+                    else
                     image1[j]=contact.getPhotoUri().toString();
                     j++;
                 }
             }
             CustomAdapter customAdapter=new CustomAdapter(this,name1,number1,image1);
+            //gridView.setAdapter(customAdapter);
             listView.setAdapter(customAdapter);
+            registerForContextMenu(listView);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        //super.onCreateContextMenu(menu, v, menuInfo);
+
+        if(v.getId()==R.id.flistview){
+            AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo)menuInfo;
+            MenuInflater inflater=getMenuInflater();
+            inflater.inflate(R.menu.friend_options,menu);
+            menu.setHeaderTitle(name1[info.position]);
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info=(AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+            return true;
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return true;
     }
 }

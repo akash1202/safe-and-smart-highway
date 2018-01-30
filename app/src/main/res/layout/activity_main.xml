@@ -1,16 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.akash.myhighway.MainActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.akash.myhighway.MainActivity"
     android:orientation="vertical"
     android:paddingTop="50dp"
     android:paddingLeft="25dp"
@@ -29,7 +26,7 @@
     android:layout_width="match_parent"
     android:layout_height="60dp"
     android:layout_marginTop="35dp"
-    android:textSize="30sp"
+    android:textSize="31sp"
     android:scrollHorizontally="true"
     android:maxLines="1"
     android:hint="Email / mob.no"
@@ -39,7 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_marginTop="10dp"
-        android:textSize="30sp"
+        android:textSize="31sp"
+        android:scrollHorizontally="true"
         android:maxLines="1"
         android:hint="Password"
         android:textColor="@color/colorWhatsapp"    />
