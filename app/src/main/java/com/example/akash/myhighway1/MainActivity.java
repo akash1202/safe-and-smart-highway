@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
             startActivity(new Intent(MainActivity.this,testIt.class));
             finish();
         }
+
         task.execute();
         e1=(EditText) findViewById(R.id.userText);
         e2=(EditText) findViewById(R.id.passwordText);
@@ -203,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
       FirebaseUser user=fbauth.getCurrentUser();
         callbackManager = CallbackManager.Factory.create();
         loginButton = (LoginButton) findViewById(R.id.facebookButton);
-        loginButton.setReadPermissions("email","public_profile","user_friends","user_birthday");
+        loginButton.setReadPermissions("email","public_profile"); //"user_friends","user_birthday"
         // If using in a fragment
         //loginButton.setFragment(MainActivity.this);
         boolean loggedin= AccessToken.getCurrentAccessToken()!=null;
@@ -266,7 +267,8 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     FirebaseUser user=fbauth.getCurrentUser();
-                                    SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),FACEBOOK_LOGIN);
+                                    loginwithfacebook(user.getUid(),user.getDisplayName());
+                                   // SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),FACEBOOK_LOGIN);
                                 }
                                 else {
                                     Toast.makeText(MainActivity.this,"Authentication failed!!",Toast.LENGTH_SHORT).show();
@@ -352,6 +354,34 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                 });
     }
 
+    private void loginwithfacebook(final String userid, final String userName) {
+            RequestQueue requestQueue=Volley.newRequestQueue(MainActivity.this);
+            String urlForRequest="https://myhighway.000webhostapp.com/api/facebooklogin.php";
+            StringRequest stringRequest=new StringRequest(Request.Method.POST, urlForRequest, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if(response.equals("success")){
+                        FirebaseUser user=fbauth.getInstance().getCurrentUser();
+                        SSHSLogin(user.getEmail(),user.getDisplayName(),user.getPhotoUrl().toString(),FACEBOOK_LOGIN);
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String,String> params=new HashMap<String,String>();
+                    params.put("uid",userid);
+                    params.put("username",userName);
+                    return params;
+                }
+            };
+            requestQueue.add(stringRequest);
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==1){
@@ -373,12 +403,13 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     public void SSHSLogin(String email,String name,String imageURL,int type){
         Intent intentforLogin=new Intent(this,testIt.class);
+
         SharedPreferences.Editor editor=sharedPreferences.edit();
         switch (type) {
             case GOOGLE_LOGIN:
                 break;
             case FACEBOOK_LOGIN:
-                Toast.makeText(this,"you needs to verify your email if null",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this,"you needs to verify your email if it is null",Toast.LENGTH_SHORT).show();
                 break;
             case CUSTOM_LOGIN:
                 break;
@@ -387,8 +418,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         editor.putString("userEmailkey",email);
         editor.putString("userNamekey",name);
         editor.putString("userPhotoURikey",imageURL);
+        editor.putInt("friends",0);
         editor.commit();
-        Toast.makeText(this,"Go...",Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this,"Go...",Toast.LENGTH_SHORT).show();
         startActivity(intentforLogin);
         finish();
     }

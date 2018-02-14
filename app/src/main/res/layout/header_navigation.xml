@@ -12,6 +12,7 @@
         android:id="@+id/profileImage"
         android:layout_height="70dp"
         android:layout_width="70dp"
+       android:scaleType="centerCrop"
         app:civ_border_overlay="false"
         android:src="@drawable/profile"
         app:civ_border_color="@color/colorWhatsapp"

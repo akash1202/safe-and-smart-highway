@@ -6,6 +6,18 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.akash.myhighway1.Aboutus">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar4"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorWhatsapp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+    </android.support.design.widget.AppBarLayout>
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -13,10 +25,8 @@
     android:textStyle="bold"
     android:gravity="center"
     android:textSize="50sp"
-    android:background="@color/colorWhatsapp"
     />
     <TextView
-        android:layout_marginTop="100dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/aboutus1"

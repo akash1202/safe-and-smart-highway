@@ -42,7 +42,6 @@ public class User {
         this.userId = userId;
         editor.putString("userIdkey",userId);
         editor.commit();
-
     }
 
     public String getUserName() {

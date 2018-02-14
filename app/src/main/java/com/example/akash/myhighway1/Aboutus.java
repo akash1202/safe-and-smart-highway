@@ -2,6 +2,7 @@ package com.example.akash.myhighway1;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
 public class Aboutus extends AppCompatActivity {
 
@@ -10,6 +11,11 @@ public class Aboutus extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_aboutus);
        // getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar4);
+        //getActionBar().setCustomView(t);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("About us");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     @Override

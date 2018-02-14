@@ -12,4 +12,5 @@
     <color name="errorColor">#ff1a01</color>
     <color name="statusbarmatchingcolor1">#f7010412</color>
     <color name="transparentcolor">#ffffffff</color>
+    <color name="whitecolor">#ffffff</color>
 </resources>

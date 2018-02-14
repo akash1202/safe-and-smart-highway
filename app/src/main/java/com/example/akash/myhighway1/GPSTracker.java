@@ -29,8 +29,8 @@ public class GPSTracker extends Service implements LocationListener
      Location location=null;
      double longitude;
      double latitude;
-     private long MIN_DISTANCE=10;  //for 10 meter
-     private long MIN_TIME=1000*60*1; //for 1 minute
+     private long MIN_DISTANCE=5;  //for 1 meter
+     private long MIN_TIME=1000*5; //for 1 second
      LocationManager locationManager;
     public GPSTracker(Context context) {
             this.mcontext=context;
@@ -61,7 +61,7 @@ public class GPSTracker extends Service implements LocationListener
                             }
                         }
                         if (isGPSEnabled) {
-                           if (location == null){
+                           if (location == null){  //location==null
                                 locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
                             if (locationManager != null) {
                                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
@@ -139,7 +139,8 @@ public class GPSTracker extends Service implements LocationListener
 
      @Override
      public void onLocationChanged(Location location) {
-
+        Toast.makeText(mcontext,"Changed...."+location.getSpeed(),Toast.LENGTH_LONG).show();
+       // mcontext.getApplicationContext().
      }
 
      @Override

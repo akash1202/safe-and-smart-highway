@@ -37,17 +37,23 @@
         android:textAllCaps="false"
         android:textColor="@color/colorWhatsapp"
         />
-<ListView
+<!--<ListView
     android:id="@+id/flistview"
     android:layout_below="@id/addfriendButton"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent"/>
-    <GridView
+    android:layout_width="match_parent"/>-->
+    <android.support.v7.widget.RecyclerView
+        android:layout_below="@id/addfriendButton"
+        android:id="@+id/freyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    </android.support.v7.widget.RecyclerView>
+    <!--<GridView
         android:id="@+id/fgridview"
         android:layout_below="@id/addfriendButton"
         android:visibility="gone"
         android:numColumns="2"
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"/>-->
 </RelativeLayout>
 </android.support.design.widget.CoordinatorLayout>

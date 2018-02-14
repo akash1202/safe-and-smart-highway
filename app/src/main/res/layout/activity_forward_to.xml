@@ -1,37 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar5"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorWhatsapp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+    </android.support.design.widget.AppBarLayout>
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="25dp"
     tools:context="com.example.akash.myhighway1.ForwardTo">
     <TextView
+        android:id="@+id/savednumber"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="70dp"
+        android:textSize="22sp"
+        android:textColor="@color/colorWhatsapp"
         />
-<EditText
-    android:id="@+id/forwardtoid"
+    <LinearLayout
+    android:id="@+id/forwardtoInput"
     android:layout_width="match_parent"
     android:layout_height="70dp"
+    android:orientation="horizontal"
+    android:weightSum="12"
+    >
+    <EditText
+    android:id="@+id/forwardtocountrycode"
+    android:layout_margin="1dp"
+    android:layout_width="0dp"
+    android:hint="+91"
+    android:textColor="@color/colorWhatsapp"
+    android:layout_height="70dp"
+    android:layout_weight="2"
+        />
+    <EditText
+    android:id="@+id/forwardtoid"
+    android:layout_margin="1dp"
+    android:layout_width="0dp"
+    android:layout_height="70dp"
+    android:layout_weight="10"
     android:textSize="22sp"
-    android:hint="Enter Mobile(with +91)"
+    android:textColor="@color/colorWhatsapp"
+    android:hint="Enter Mobile"
      />
+</LinearLayout>
     <Button
         android:id="@+id/forwardtoidok"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:textAllCaps="false"
         android:textSize="22sp"
+        android:textColor="@color/colorWhatsapp"
         android:text="Set It..Now"
         />
     <Button
-        android:id="@+id/forwardResetButton"
+        android:id="@+id/forwardtoResetButton"
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:textAllCaps="false"
         android:textSize="22sp"
+        android:textColor="@color/colorWhatsapp"
         android:text="Reset"
         />
+</LinearLayout>
 </LinearLayout>

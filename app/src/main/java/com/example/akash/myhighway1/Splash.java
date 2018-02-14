@@ -23,11 +23,19 @@ public class Splash extends AppCompatActivity implements View.OnClickListener{
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(ContextCompat.getColor(Splash.this,R.color.statusbarmatchingcolor1));
         //getActionBar().setDisplayOptions();
-
         FitWindowsFrameLayout splashView=(FitWindowsFrameLayout) findViewById(R.id.splashView);
         splashView.setOnClickListener(this);
-
         splashView.setAnimation(anim);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

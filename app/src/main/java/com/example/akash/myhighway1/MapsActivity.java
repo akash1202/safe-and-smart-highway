@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.akash.myhighway1.POJO.Example;
 import com.google.android.gms.common.ConnectionResult;
@@ -104,6 +105,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng sydney = new LatLng(myTracker.getLatitude(), myTracker.getLongitude());
         mMap.addMarker(new MarkerOptions().position(sydney).title("Current Location"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        buildGoogleApiClient();
+        try {
+            this.mMap.setMyLocationEnabled(true);
+        }
+        catch (SecurityException e){
+            Toast.makeText(MapsActivity.this,"Security Exception:"+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(MapsActivity.this,"Provide GPS Permission",Toast.LENGTH_SHORT).show();
+        }
     }
     public void setLocationOnMap(double lat,double lon){
         LatLng current = new LatLng(lat,lon);
@@ -135,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
 
         RetrofitMaps service = retrofit.create(RetrofitMaps.class);
-        Call<Example> call = service.getNearbyPlaces(type, myTracker.getLatitude() + "," + myTracker.getLongitude(), PROXIMITY_RADIUS);
+        Call<Example> call = service.getNearbyPlaces(type, myTracker.getLatitude()+","+myTracker.getLongitude(), PROXIMITY_RADIUS);
 
         call.enqueue(new Callback<Example>() {
             @Override

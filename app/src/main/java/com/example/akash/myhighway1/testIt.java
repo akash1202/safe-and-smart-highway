@@ -1,14 +1,27 @@
 package com.example.akash.myhighway1;
 
 
+import android.*;
+import android.Manifest;
+import android.app.ProgressDialog;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
+import android.content.pm.ResolveInfo;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.location.LocationListener;
+import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,43 +33,73 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.support.v7.widget.Toolbar;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amulyakhare.textdrawable.TextDrawable;
 import com.amulyakhare.textdrawable.util.ColorGenerator;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.example.akash.myhighway1.POJO.Example;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.places.GeoDataClient;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.UiSettings;
+import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.koushikdutta.ion.Ion;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
+import com.theartofdev.edmodo.cropper.CropImage;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
+
+import javax.xml.datatype.Duration;
+import javax.xml.transform.ErrorListener;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
@@ -64,11 +107,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-
-public class testIt extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,LocationListener{
+//TODO: add customized marker example by implementing GoogleMap.InfoWindowAdapter
+public class testIt extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnInfoWindowClickListener,GoogleMap.InfoWindowAdapter{
 private static final String TAG="mainActivity";
-    private static final int CHANGE_PROFILE_PICTURE = 21;
-
+    private static final int CHANGE_PROFILE_PICTURE = 22;
+    public static final String DATABASE_NAME="ContactManager";
     Button b1,updateLocation,getPlaceButton;
     FloatingActionButton floatingActionButton;
     TextView t1,t2,t3,prEmail,prName;
@@ -76,21 +119,29 @@ private static final String TAG="mainActivity";
     Toolbar toolbar;
     DrawerLayout mDrawer;
     ActionBarDrawerToggle mToggle;
+    Snackbar snackbar;
     FirebaseAuth FAuth;
     FirebaseUser FUser; //current user
     String OnlineUserId;
     DatabaseReference FReference=null;
     GPSTracker myTracker;
     GeoDataClient geoDataClient;
+    MyAsyncTask task=new MyAsyncTask();
     GoogleMap googleMap;
     SupportMapFragment supportMapFragment;
+
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
     String PREFRENCENAME="AKASHSASH";
+    static final int CROP_FROM_CAMERA=21;
+
+
     int PICK_CONTACT=3;
     static final int REQUEST_CONTACT=11;
     int changed=0;
     Uri changedprImageUri=null;
+    Location l1,l2;
+    LocationRequest mLocationRequest=null;
     GoogleApiClient mGoogleApiClient=null;
     private int PROXIMITY_RADIUS = 1000;
     @Override
@@ -151,9 +202,10 @@ private static final String TAG="mainActivity";
         View header =navigationView.getHeaderView(0);
 
 
+        task.execute();
 
-        prName=header.findViewById(R.id.prName);
-        prEmail=header.findViewById(R.id.prEmail);
+        prName=(TextView) header.findViewById(R.id.prName);
+        prEmail=(TextView) header.findViewById(R.id.prEmail);
         prPhoto=(CircleImageView) header.findViewById(R.id.profileImage);
     //sharedPreferences.getString("emailkey","")!=null&&sharedPreferences.getString("usernamekey","")!=null&&sharedPreferences.getString("imageURLkey","")!=null
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
@@ -170,20 +222,27 @@ private static final String TAG="mainActivity";
        // FReference.child("user_email").setValue(userEmail);
        // FReference.child("user_phone").setValue(userPhone);
         if(!userImageURLs.equals("")&&changed==0) {
-            Uri myuri = Uri.parse(userImageURLs);
-            Toast.makeText(testIt.this,myuri+":parsed",Toast.LENGTH_LONG).show();
+            //Uri myuri = Uri.parse(userImageURLs);
+           // Toast.makeText(testIt.this,myuri+":parsed",Toast.LENGTH_LONG).show();
             try {
-                Picasso.with(testIt.this)
-                        .load(myuri)
+                /*Picasso.with(testIt.this)
+                        .load(userImageURLs)
                         .centerCrop()
                         .resize(70, 70)
-                        .into(prPhoto);
+                        .into(prPhoto);*/
+                /*Picasso.with(testIt.this).load(userImageURLs)
+                        .placeholder(R.drawable.com_facebook_profile_picture_blank_square)
+                        .error(R.drawable.com_facebook_profile_picture_blank_square)
+                        .into(prPhoto);*/
+                com.nostra13.universalimageloader.core.ImageLoader imageLoader= com.nostra13.universalimageloader.core.ImageLoader.getInstance();
+                imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
+                imageLoader.displayImage(userImageURLs,prPhoto);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         else if(userImageURLs.equals("")&&changed==0){
-            Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
+            //Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
             ColorGenerator generator=ColorGenerator.MATERIAL;
             TextDrawable textDrawable=TextDrawable.builder()
                     .beginConfig()
@@ -194,8 +253,13 @@ private static final String TAG="mainActivity";
         prPhoto.setImageDrawable(textDrawable);
         }
         else {
-            Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
-            prPhoto.setImageURI(Uri.parse(userImageURLs));
+            //Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
+            //prPhoto.setImageURI(Uri.parse(userImageURLs));
+            Picasso.with(testIt.this)
+                    .load(userImageURLs)
+                    .centerCrop()
+                    .resize(70, 70)
+                    .into(prPhoto);
         }
         prName.setText(userName);
         if(userEmail.equals("")) {
@@ -228,10 +292,26 @@ private static final String TAG="mainActivity";
                 public void onClick(View view) {
                     if(myTracker.cangetLocation()){
                         myTracker.getLocation();
-                        t1.setText(myTracker.getLongitude()+"");
-                        t2.setText(myTracker.getLatitude()+"");
+                        /*if(snackbar.isShown()){
+                            snackbar.dismiss();}*/
+                        l1=new Location("A");
+                        l1.setLatitude(myTracker.getLatitude());
+                        l1.setLongitude(myTracker.getLongitude());
+                        snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude()+"\nspeed: 0km/h",Snackbar.LENGTH_LONG);
+                        snackbar.setActionTextColor(getResources().getColor(R.color.whitecolor));
+                        snackbar.setAction("dismiss", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                snackbar.dismiss();
+                            }
+                        });
+                        View sbView=snackbar.getView();
+                        sbView.setBackgroundColor(getResources().getColor(R.color.colorWhatsapp));
+                        snackbar.setDuration(Snackbar.LENGTH_INDEFINITE).show();
+                       // t1.setText(myTracker.getLongitude()+"");
+                       // t2.setText(myTracker.getLatitude()+"");
+                        //onMapReady(googleMap);
                         setLocationOnMap(myTracker.getLatitude(),myTracker.getLongitude());
-                        onMapReady(googleMap);
                     }
                     else{
                         myTracker.showSettingAlert();
@@ -312,6 +392,7 @@ private static final String TAG="mainActivity";
                 break;
             }
             case R.id.logout: {
+                getApplicationContext().deleteDatabase(DATABASE_NAME);
                 sharedPreferences.edit().clear().commit();
                 FirebaseAuth.getInstance().signOut();
                 LoginManager.getInstance().logOut();
@@ -373,6 +454,7 @@ private static final String TAG="mainActivity";
         startActivity(myInfoIntent);
     }
     if(id==R.id.idlogout){
+        getApplicationContext().deleteDatabase(DATABASE_NAME);
         sharedPreferences.edit().clear().commit();
         FirebaseAuth.getInstance().signOut();
         LoginManager.getInstance().logOut();
@@ -384,6 +466,7 @@ private static final String TAG="mainActivity";
     //}
         return true;
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -414,6 +497,35 @@ private static final String TAG="mainActivity";
                 phoneCursor.close();
             }*/
         }
+
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    prPhoto.setImageURI(resultUri);
+                    uploadImage(resultUri,"140420107001");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+        }
+
+        if(requestCode==CROP_FROM_CAMERA){
+            Bitmap croppedImage=null;
+          Uri photoTempUri= data.getData();
+          croppedImage=BitmapFactory.decodeFile(photoTempUri.getPath());
+            try {
+                ByteArrayOutputStream stream=new ByteArrayOutputStream();
+                croppedImage.compress(Bitmap.CompressFormat.JPEG,100,stream);
+                Toast.makeText(testIt.this,""+photoTempUri,Toast.LENGTH_LONG).show();
+                //uploadImage(photoTempUri,"140420107001");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         if(requestCode==CHANGE_PROFILE_PICTURE){
             if(resultCode==RESULT_OK) {
                 if(data!=null) {
@@ -421,7 +533,7 @@ private static final String TAG="mainActivity";
                     try {
             /*   Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageuri);
                prPhoto.setImageBitmap(bitmap);*/
-                        prPhoto.setImageURI(imageuri);
+                        //prPhoto.setImageURI(imageuri);
                     } catch (Exception e) {
                         Toast.makeText(testIt.this, "Exception:" + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
@@ -429,6 +541,14 @@ private static final String TAG="mainActivity";
                     this.grantUriPermission(this.getPackageName(), imageuri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     this.getContentResolver().takePersistableUriPermission(imageuri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     editor.putString("userPhotoURikey", String.valueOf(imageuri));
+                    try {
+                        CropImage.activity(imageuri)
+                                .start(this);
+                        //doCrop(imageuri);
+                        //uploadImage(imageuri,"140420107001");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     changed += 1;
                     editor.putString("changedpic", changed + "");
                     editor.commit();
@@ -438,34 +558,182 @@ private static final String TAG="mainActivity";
             }
     }
 
+
+
+
+    //croping image
+    private void doCrop(Uri mImageCaptureUri) {
+       // this.mImageCaptureUri = mImageCaptureUri;
+        this.grantUriPermission(this.getPackageName(), mImageCaptureUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        this.getContentResolver().takePersistableUriPermission(mImageCaptureUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        Intent intent = new Intent("com.android.camera.action.CROP");
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        // intent.setType("image/*");
+       // intent.setDataAndType(mImageCaptureUri, "image/*");
+      // List<ResolveInfo> list = getPackageManager().queryIntentActivities(
+              // intent, 0);
+       // int size = list.size();
+
+        if (false) {
+            // Toast.makeText(this,
+            // "Can not find image crop section",Toast.LENGTH_SHORT).show();
+            return;
+        } else {
+            // Toast.makeText(this,
+            // "image crop section started..",Toast.LENGTH_SHORT).show();
+
+            intent.setData(mImageCaptureUri);
+
+            // Bitmap bitmap_1 = readBitmap(mImageCaptureUri);
+            Bitmap tempBitmap=null;
+            try {
+                tempBitmap = MediaStore.Images.Media.getBitmap(
+                        this.getContentResolver(), mImageCaptureUri);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }// = bitmap_1;
+           /// new MydataLoader().execute(function.sendimage);
+            // changed
+
+            intent.putExtra("crop", true);
+            intent.putExtra("outputX", 200);
+            intent.putExtra("outputY", 200);
+            intent.putExtra("aspectX", 1);
+            intent.putExtra("aspectY", 1);
+            intent.putExtra("scale", true);
+            intent.putExtra("return-data", true);
+            startActivityForResult(intent, CROP_FROM_CAMERA);
+            // Log.e("size",""+size);
+            /*if (size >= 1) {
+                // Toast.makeText(MerchantLogin.this,
+                // "Cropimage got called with size"+ size,
+                // Toast.LENGTH_SHORT).show();
+                Intent i = new Intent(intent);
+                ResolveInfo res = list.get(0);
+
+                i.setComponent(new ComponentName(res.activityInfo.packageName,
+                        res.activityInfo.name));
+
+              //  startActivityForResult(i, CROP_FROM_CAMERA);
+
+            } else {
+                // Toast.makeText(MerchantLogin.this,
+                // "Cropimage not get called", Toast.LENGTH_SHORT).show();
+            }*/
+        }
+    }
+    public boolean uploadImage(Uri uri, final String id) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        Bitmap bitmap = null;
+        bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+
+        //Setting image to ImageView
+        //image.setImageBitmap(bitmap);
+        //final ProgressDialog progDialog = new ProgressDialog(testIt.this);
+        //progDialog.setMessage("Uploading, please wait...");
+        //progDialog.show();
+
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String uploadingUsingURL="https://myhighway.000webhostapp.com/api/upload.php";
+        final String path=uri.getPath();
+        final String extension=path.substring(path.lastIndexOf("."));
+        final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        final String userId=id;
+        RequestQueue requestQueue= Volley.newRequestQueue(testIt.this);
+        //sending image to server
+        StringRequest request = new StringRequest(Request.Method.POST, uploadingUsingURL, new com.android.volley.Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+               // progDialog.dismiss();
+                Toast.makeText(testIt.this, response, Toast.LENGTH_LONG).show();/*
+                if(response.equals("success")){
+                    Toast.makeText(testIt.this, "Uploaded Successful", Toast.LENGTH_LONG).show();
+
+                }
+                else{
+                    Toast.makeText(testIt.this, "Some error occurred!......", Toast.LENGTH_LONG).show();
+                }*/
+            }
+        }, new com.android.volley.Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(testIt.this, "Some error occurred -> "+error, Toast.LENGTH_LONG).show();;
+            }
+        }){
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> parameters = new HashMap<String, String>();
+                parameters.put("image", imageString);
+                parameters.put("extension",extension);
+                parameters.put("id",userId);
+
+                return parameters;
+            }
+        };
+
+
+        requestQueue.add(request);
+
+        return true;
+    }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
-        if(myTracker.cangetLocation()){
-            myTracker.getLocation();
-        }
-    }
-    public void setLocationOnMap(double lat,double lon){
-        LatLng current = new LatLng(lat,lon);
-        this.googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        UiSettings uiSettings=googleMap.getUiSettings();
+        this.googleMap.setBuildingsEnabled(true);
+        this.googleMap.setOnInfoWindowClickListener(this);
+        this.googleMap.setInfoWindowAdapter(this);
+        UiSettings uiSettings=this.googleMap.getUiSettings();
         //uiSettings.setAllGesturesEnabled(true);
-        uiSettings.setMyLocationButtonEnabled(false);
+        uiSettings.setMyLocationButtonEnabled(true);
         uiSettings.setIndoorLevelPickerEnabled(true);
         uiSettings.setTiltGesturesEnabled(false);
         uiSettings.setZoomControlsEnabled(true);
+        if(myTracker.cangetLocation()){
+            myTracker.getLocation();
+            LatLng previousUpdateLocation = new LatLng(myTracker.getLatitude(), myTracker.getLongitude());
+            this.googleMap.addMarker(new MarkerOptions().position(previousUpdateLocation).title("Current Location1"));
+            this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(previousUpdateLocation));
+        }
+        buildGoogleApiClient();
+        try {
+            this.googleMap.setMyLocationEnabled(true);
+        }
+        catch (SecurityException e){
+            Toast.makeText(testIt.this,"Security Exception:"+e.getMessage(),Toast.LENGTH_SHORT).show();
+            Toast.makeText(testIt.this,"Provide GPS Permission",Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void setLocationOnMap(double lat,double lon){
+        this.googleMap.clear();
+        LatLng current = new LatLng(lat,lon);
+        this.googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+        this.googleMap.setMinZoomPreference(10);  //for see into city
         CameraPosition cameraPosition= new CameraPosition.Builder()
                 .target(current)
-                .zoom(15)
+                .zoom(17)
                 .bearing(90)
-                .tilt(60)
+                .tilt(80)
                 .build();
+        try {
+            googleMap.addCircle(new CircleOptions()
+            .center(current)
+            .radius(PROXIMITY_RADIUS)
+            .strokeColor(Color.RED)
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Marker marker=this.googleMap.addMarker(new MarkerOptions().position(current).title("Current Place"));
         marker.showInfoWindow();
-        this.googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        build_retrofit_and_get_response("car_repair");
-    }
+        build_retrofit_and_get_response("restaurant");
+        //this.googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),2000,null);
 
+    }
 
     //place type in google map
     /*accounting,airport,amusement_park,aquarium,art_gallery,atm,bakery,bank,bar,beauty_salon,bicycle_store,book_store,bowling_alley
@@ -476,6 +744,15 @@ private static final String TAG="mainActivity";
     museum,night_club,painter,park,parking,pet_store,pharmacy,physiotherapist,plumber,police,post_office,real_estate_agency,restaurant
     roofing_contractor,rv_park,school,shoe_store,shopping_mall,spa,stadium,storage,store,subway_station,supermarket,synagogue,taxi_stand
     train_station,transit_station,travel_agency,veterinary_care,zoo*/
+
+    // zoom level by google by default
+
+    /*
+    1: World
+    5: Landmass/continent
+    10: City
+    15: Streets
+    20: Buildings   */
 
     private void build_retrofit_and_get_response(String type) {
 
@@ -488,56 +765,171 @@ private static final String TAG="mainActivity";
 
         RetrofitMaps service = retrofit.create(RetrofitMaps.class);
 
-        Call<Example> call = service.getNearbyPlaces(type, myTracker.getLatitude() + "," + myTracker.getLongitude(), PROXIMITY_RADIUS);
-
+        Call<Example> call = service.getNearbyPlaces(type, myTracker.getLatitude()+","+myTracker.getLongitude(), PROXIMITY_RADIUS);
         call.enqueue(new Callback<Example>() {
             @Override
-            public void onResponse(Call<Example> call, Response<Example> response) {
-                GoogleMap mMap = googleMap;
+            public void onResponse(Call<Example> call,Response<Example> response) {
+                final Response<Example> myresponse = response;
+                Log.d("url:",response.toString());
                 //mMap.clear();
                 // This loop will go through all the results and add marker on each location.
-               try {
-                   for (int i = 0; i < response.body().getResults().size(); i++) {
-                       Double lat = response.body().getResults().get(i).getGeometry().getLocation().getLat();
-                       Double lng = response.body().getResults().get(i).getGeometry().getLocation().getLng();
-                       String placeName = response.body().getResults().get(i).getName();
-                       String vicinity = response.body().getResults().get(i).getVicinity();
-                       MarkerOptions markerOptions = new MarkerOptions();
-                       LatLng latLng = new LatLng(lat, lng);
-                       // Position of Marker on Map
-                       markerOptions.position(latLng);
-                       // Adding Title to the Marker
-                       markerOptions.title(placeName + " : " + vicinity);
-                       // Adding Marker to the Camera.
-                       Marker m = mMap.addMarker(markerOptions);
-                       // Adding colour to the marker
-                       markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                       // move map camera
-                       mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
-                       mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
-                   }
-                   mMap.animateCamera(CameraUpdateFactory.zoomTo(15));
-               }
-               catch (Exception e){
-                   Log.d("onResponse", "There is an error");
-                   e.printStackTrace();
-               }
+                final int total=response.body().getResults().size();
+                 final MarkerOptions markerOptions[] = new MarkerOptions[total];
+                 final String placeImages[]=new String[total];
+                //final Bitmap bitmapImage[] = new Bitmap[response.body().getResults().size()];
+                for (int i = 0; i < total; i++) {
+                    Double lat = myresponse.body().getResults().get(i).getGeometry().getLocation().getLat();
+                    Double lng = myresponse.body().getResults().get(i).getGeometry().getLocation().getLng();
+                    final String placeName = myresponse.body().getResults().get(i).getName();
+                    String vicinity = myresponse.body().getResults().get(i).getVicinity();
+                    placeImages[i] = myresponse.body().getResults().get(i).getIcon();
+                    Log.d(placeName,placeImages[i]);
+                    markerOptions[i] = new MarkerOptions();
+                    LatLng latLng = new LatLng(lat, lng);
+                    // Position of Marker on Map
+                    markerOptions[i].position(latLng);
+                    l2=new Location("B");
+                    l2.setLatitude(lat);
+                    l2.setLongitude(lng);
+
+                    // Adding Title to the Marker
+                    markerOptions[i].title(placeName);
+                   // markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.com_facebook_profile_picture_blank_square));
+                    final int j=i;
+
+
+                    /*googleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                        @Override
+                        public View getInfoWindow(Marker marker) {
+                            return null;
+                        }
+
+                        @Override
+                        public View getInfoContents(Marker marker) {
+                *//*
+                Here you will inflate the custom layout that you want to use for marker. I have inflate the custom view according to my requirements.
+               *//*
+                            View v = getLayoutInflater().inflate(R.layout.custom_marker, null);
+                            ImageView imageView = (ImageView) v.findViewById(R.id.imgView_map_info_content);
+                            imageView.setImageURI(Uri.parse(placeImages[j]));
+                            return v;
+                        }
+                    });*/
+
+                    /*Bitmap theBitmap = Glide.
+                            with(testIt.this)
+                            .load("http://....")
+                            .asBitmap()
+                            .into(100, 100)
+                            .get();*/
+                    // Adding colour to the marker
+                    //markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
+                    // Adding Marker to the Camera.
+                    double distance=l2.distanceTo(l1);
+                    distance=distance/1000;
+                    String str=String.format("%2.2f",distance);
+                    markerOptions[i].zIndex(90);
+                    markerOptions[i].describeContents();
+                    markerOptions[i].snippet(str+"kms : "+vicinity);
+
+
+                    Marker markertemp=googleMap.addMarker(markerOptions[i]);
+                    PicassoMarker marker = new PicassoMarker(markertemp);
+                    //"https://instagram.fbom1-2.fna.fbcdn.net/vp/4194fe04f692b50fb164ff8d4779fe1d/5B24DAA7/t51.2885-19/s150x150/22801907_169073640345040_1768792490271309824_n.jpg"
+                    Picasso.with(testIt.this).load(placeImages[i]).into(marker);
+                    /*class getBitmapThread extends Thread {
+                        Bitmap bitmap = null;
+                        String url = "";
+
+                        getBitmapThread(String url) {
+                            this.url = url;
+                        }
+
+                        public Bitmap getImage() {
+                            return bitmap;
+                        }
+
+                        public void run() {
+
+                        }
+                    }*/
+
+                    //mMap.animateCamera(CameraUpdateFactory.zoomTo(11));
+                }
+
+               // final MarkerOptions markerOptions1[]=markerOptions;
+
+                Log.d("length:",markerOptions.length+"");
+              //  Log.d("length1:",markerOptions1.length+"");
+             //for (int i = 0; i < total; i++) {
+                   /*final int j = i;
+                    Bitmap bitmapImage = null;
+                    Picasso.with(testIt.this)
+                            .load(Uri.parse(placeImages[i]))
+                            .resize(25, 25)
+                            .into(new Target() {
+                                @Override
+                                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                                    markerOptions1[j].icon(BitmapDescriptorFactory.fromBitmap(bitmap));
+                                    Log.d("Icon:",markerOptions1[j].getIcon().toString());
+                                }
+
+                                @Override
+                                public void onBitmapFailed(Drawable errorDrawable) {
+                                //markerOptions1[j].icon(BitmapDescriptorFactory.fromResource(R.drawable.com_facebook_profile_picture_blank_square));
+                                }
+
+                                @Override
+                                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                                }
+                            });
+                    markerOptions[i].icon(markerOptions1[i].getIcon());
+*/
+                    // move map camera
+                    //googleMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+                 //markerOptions[i].icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                 //Log.d("Icon:",markerOptions[j].getIcon().toString());
+
+            //  }
+                Toast.makeText(testIt.this, "" + response.body().getResults().size(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onFailure(Call<Example> call, Throwable t) {
-
+                Toast.makeText(testIt.this,"Failer error:"+t.toString(),Toast.LENGTH_SHORT).show();
             }
             });
+
     }
 
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==1){
-                if(grantResults[0]== PackageManager.PERMISSION_DENIED){
+            if(grantResults[0]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Gps access for Better result!",Toast.LENGTH_SHORT).show();
-            //finish();
+                (new testIt.MyAsyncTask()).execute();
+            }
+            if(grantResults[1]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
+                (new testIt.MyAsyncTask()).execute();
+            }
+            if(grantResults[2]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide send SMS for Better result!",Toast.LENGTH_SHORT).show();
+                (new testIt.MyAsyncTask()).execute();
+            }
+            if(grantResults[3]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Permission for Read External Storage!",Toast.LENGTH_SHORT).show();
+                (new testIt.MyAsyncTask()).execute();
+            }
+            if(grantResults[4]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Permission for Write External Storage!",Toast.LENGTH_SHORT).show();
+                (new testIt.MyAsyncTask()).execute();
+            }
+            if(grantResults[5]== PackageManager.PERMISSION_DENIED){
+                Toast.makeText(this,"Provide Permission for read Network status!",Toast.LENGTH_SHORT).show();
+                (new testIt.MyAsyncTask()).execute();
             }
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -596,10 +988,10 @@ private static final String TAG="mainActivity";
     }
 
 
-    @Override
+    /*@Override
     public void onLocationChanged(Location location) {
         Toast.makeText(testIt.this,"Location changed",Toast.LENGTH_SHORT);
-      /*  t1.setText(myTracker.getLongitude()+"");
+      *//*  t1.setText(myTracker.getLongitude()+"");
         t2.setText(myTracker.getLatitude()+"");
         if(location.hasSpeed()){
             t3.setText(location.getSpeed()*(3600/1000)+"");
@@ -610,38 +1002,87 @@ private static final String TAG="mainActivity";
         else{
             //Toast.makeText(testIt.this,"Due to Network based location can't get Speed",Toast.LENGTH_SHORT).show();
             t3.setText("0 km/h");
+    }*//*
     }*/
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        marker.showInfoWindow();
+       Toast.makeText(this, ""+marker.getTitle(),Toast.LENGTH_SHORT).show();
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
+    public View getInfoWindow(Marker marker) {
+        return null;
     }
 
     @Override
-    public void onProviderEnabled(String s) {
+    public View getInfoContents(Marker marker) {
+        View v= getLayoutInflater().inflate(R.layout.custom_marker,null);
+        ImageView imageIcon=v.findViewById(R.id.imgView_map_info_content);
+        TextView textView=v.findViewById(R.id.info_infowindow);
+        imageIcon.setImageResource(R.drawable.profile);
+        textView.setText(marker.getSnippet());
+        return v;
+    }
+
+    public class MyAsyncTask extends AsyncTask<String,String,String>{
+        // AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            ActivityCompat.requestPermissions(testIt.this,new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.READ_CONTACTS, android.Manifest.permission.SEND_SMS,android.Manifest.permission.READ_EXTERNAL_STORAGE,android.Manifest.permission.WRITE_EXTERNAL_STORAGE,android.Manifest.permission.ACCESS_NETWORK_STATE},1);
+           /* showProgressbar(2);
+            try {
+                Thread.sleep(3*1000);
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finally {
+            loader.hide();
+            }*/
+            return null;
+        }
 
     }
 
-    @Override
-    public void onProviderDisabled(String s) {
 
 
-    }
+
+
 
     //for GoogleApi implement
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-
+       // mLocationRequest=new LocationRequest();
+       // mLocationRequest.setInterval(1000);
+       // mLocationRequest.setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
     }
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Toast.makeText(testIt.this,"APi error: suspended connection",Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+    Toast.makeText(testIt.this,"APi error:"+connectionResult.getErrorMessage().toString(),Toast.LENGTH_SHORT).show();
     }
+
 }
