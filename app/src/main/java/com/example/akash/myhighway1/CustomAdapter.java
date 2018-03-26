@@ -1,6 +1,7 @@
 package com.example.akash.myhighway1;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -31,6 +32,8 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
     Context context;
     PopupMenu popupMenu;
     DatabaseHandler db;
+    private String PREFRENCENAME="AKASHSASH";
+    SharedPreferences sharedPreferences;
     public class MyViewHolder extends RecyclerView.ViewHolder {
         CircleImageView profilecircleImageView;
         TextView nameTextView;
@@ -49,6 +52,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
         this.db=new DatabaseHandler(context);
         this.ContactList=ContactList;
         this.context=context;
+        sharedPreferences=context.getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -113,6 +117,10 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
    public void removeItem(int position,MyContact TempContact){
         db.deleteContact(TempContact);
         ContactList.remove(position);
+        SharedPreferences.Editor editor=sharedPreferences.edit();
+        int totalfriends=sharedPreferences.getInt("friends",0);
+        if(totalfriends>1)
+        editor.putInt("friends",totalfriends-1).commit();
         notifyItemRemoved(position);
         //notifyItemRangeChanged(position,ContactList.size());
         notifyItemRangeChanged(position,ContactList.size());

@@ -18,6 +18,13 @@
             app:popupTheme="@style/AppTheme.PopupOverlay"
             />
     </android.support.design.widget.AppBarLayout>
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <TextView
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -62,4 +69,15 @@
         android:textStyle="bold"
         android:text="9016435625"
         />
+        <Button
+            android:id="@+id/sendFeedbackButton"
+            android:text="Send Feedback"
+            android:textSize="25sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorWhatsapp"
+            android:textStyle="bold"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</ScrollView>
 </LinearLayout>

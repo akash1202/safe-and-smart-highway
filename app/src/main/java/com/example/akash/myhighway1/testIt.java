@@ -4,8 +4,11 @@ package com.example.akash.myhighway1;
 import android.*;
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -14,11 +17,15 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
+import android.net.ConnectivityManager;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -31,17 +38,26 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,9 +96,9 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.onesignal.OneSignal;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
@@ -93,8 +109,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -108,8 +126,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 //TODO: add customized marker example by implementing GoogleMap.InfoWindowAdapter
-public class testIt extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnInfoWindowClickListener,GoogleMap.InfoWindowAdapter{
-private static final String TAG="mainActivity";
+public class testIt extends AppCompatActivity implements OnMapReadyCallback,NavigationView.OnNavigationItemSelectedListener,GoogleApiClient.ConnectionCallbacks,GoogleApiClient.OnConnectionFailedListener,GoogleMap.OnInfoWindowClickListener,GoogleMap.OnInfoWindowLongClickListener,GoogleMap.InfoWindowAdapter {
+private static final String TAG="testItActivity";
     private static final int CHANGE_PROFILE_PICTURE = 22;
     public static final String DATABASE_NAME="ContactManager";
     Button b1,updateLocation,getPlaceButton;
@@ -118,11 +136,13 @@ private static final String TAG="mainActivity";
     CircleImageView prPhoto;
     Toolbar toolbar;
     DrawerLayout mDrawer;
+    AppBarLayout appBarLayout;
+    RecyclerView recyclerView;
     ActionBarDrawerToggle mToggle;
     Snackbar snackbar;
     FirebaseAuth FAuth;
     FirebaseUser FUser; //current user
-    String OnlineUserId;
+    String OnlineUserId,currentPlaceType="hospital",responseOfSendRequest="";
     DatabaseReference FReference=null;
     GPSTracker myTracker;
     GeoDataClient geoDataClient;
@@ -139,6 +159,7 @@ private static final String TAG="mainActivity";
     int PICK_CONTACT=3;
     static final int REQUEST_CONTACT=11;
     int changed=0;
+    Spinner Sp1,Sp2;
     Uri changedprImageUri=null;
     Location l1,l2;
     LocationRequest mLocationRequest=null;
@@ -158,7 +179,12 @@ private static final String TAG="mainActivity";
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(testIt.this,MapsActivity.class));
+                User user=new User(testIt.this);
+                if(myTracker.cangetLocation()) {
+                    user.setLastLocationLat(myTracker.getLatitude());
+                    user.setLastLocationLong(myTracker.getLongitude());
+                }
+                startActivity(new Intent(testIt.this,Alert.class));
             }
         });
 
@@ -170,6 +196,7 @@ private static final String TAG="mainActivity";
         toolbar=(Toolbar) findViewById(R.id.toolbar);
         //getActionBar().setCustomView(t);
         setSupportActionBar(toolbar);
+        appBarLayout=(AppBarLayout) findViewById(R.id.appBarLayout);
         mDrawer=findViewById(R.id.drawerLayout);
         ActionBarDrawerToggle drawerToggle=new ActionBarDrawerToggle(this,mDrawer,toolbar,R.string.draweropen_desc,R.string.drawerclose_desc);
         mDrawer.addDrawerListener(drawerToggle);
@@ -197,10 +224,57 @@ private static final String TAG="mainActivity";
             });*/
 /*        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.app_bar);*/
+        myTracker=new GPSTracker(getApplicationContext(),testIt.this);
+        updateMeOnserver();
+        recyclerView=(RecyclerView) findViewById(R.id.livefriends);
+        Sp1=(Spinner) findViewById(R.id.typeOfPlaceSpinner);
+        Sp2=(Spinner) findViewById(R.id.radiousOfSearch);
+
+        String[] placesTypeSpinner={"accounting","airport","amusement_park","aquarium","art_gallery","atm","bakery","bank","bar","beauty_salon","bicycle_store","book_store","bowling_alley",
+                "bus_station","cafe","campground","car_dealer","car_rental","car_repair","car_wash","casino","cemetery","church","city_hall","clothing_store","convenience_store",
+                "courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","fire_station","florist","funeral_home","furniture_store",
+                "gas_station","gym","hair_care","hardware_store","hindu_temple","home_goods_store","hospital","insurance_agency","jewelry_store","laundry","lawyer",
+                "library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_rental","movie_theater","moving_company",
+                "museum","night_club","painter","park","parking","pet_store","pharmacy","physiotherapist","plumber","police","post_office","real_estate_agency","restaurant",
+                "roofing_contractor","rv_park,school","shoe_store","shopping_mall","spa","stadium","storage","store","subway_station","supermarket","synagogue","taxi_stand",
+                "train_station","transit_station","travel_agency","veterinary_care","zoo"};
+        String[] radious={"1","2","3","5","7","10","15","20"};
+        ArrayAdapter<String> placeTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,placesTypeSpinner);
+        ArrayAdapter<String> radiousTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,radious);
+        //placeTypes.setDropDownViewResource(R.layout.places_spinner_item);
+        Sp1.setAdapter(placeTypes);
+        Sp1.setSelection(placeTypes.getPosition("hospital"));
+        Sp2.setAdapter(radiousTypes);
+        Sp1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                TextView tempTextView=(TextView) view.findViewById(R.id.placeTypeSingleItem);
+                Toast.makeText(testIt.this,""+tempTextView.getText().toString(),Toast.LENGTH_SHORT).show();
+                currentPlaceType=tempTextView.getText().toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        Sp2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+             TextView tempTextView=(TextView) view.findViewById(R.id.placeTypeSingleItem);
+              PROXIMITY_RADIUS=Integer.parseInt(tempTextView.getText().toString())*1000;
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
         setnavigationViewListener();
         NavigationView navigationView= findViewById(R.id.navigationMenu);
         View header =navigationView.getHeaderView(0);
-
 
         task.execute();
 
@@ -210,18 +284,25 @@ private static final String TAG="mainActivity";
     //sharedPreferences.getString("emailkey","")!=null&&sharedPreferences.getString("usernamekey","")!=null&&sharedPreferences.getString("imageURLkey","")!=null
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
         String userEmail=sharedPreferences.getString("userEmailkey","");
+        String userPhone=sharedPreferences.getString("userMobNumberkey","");
         String userName=sharedPreferences.getString("userNamekey","");
         String userImageURLs=sharedPreferences.getString("userPhotoURikey","");
-        String userPhone=sharedPreferences.getString("userMobNumberkey","");
         changed=Integer.parseInt(sharedPreferences.getString("changedpic","0"));
        // FUser=FirebaseAuth.getInstance().getCurrentUser();
-       // OnlineUserId=FUser.getUid();
-        OneSignal.sendTag("username:",userName);
+        // OnlineUserId=FUser.getUid();
+
+
+
+        // OneSignal.sendTag("username:",userName);
+
+
+
+
        // FReference=FirebaseDatabase.getInstance().getReference().child("Users").child(OnlineUserId);
        // FReference.child("user_name").setValue(userName);
        // FReference.child("user_email").setValue(userEmail);
        // FReference.child("user_phone").setValue(userPhone);
-        if(!userImageURLs.equals("")&&changed==0) {
+        if(!userImageURLs.equals("")) {
             //Uri myuri = Uri.parse(userImageURLs);
            // Toast.makeText(testIt.this,myuri+":parsed",Toast.LENGTH_LONG).show();
             try {
@@ -241,7 +322,7 @@ private static final String TAG="mainActivity";
                 e.printStackTrace();
             }
         }
-        else if(userImageURLs.equals("")&&changed==0){
+       /* else if(userImageURLs.equals("")&&changed==0){
             //Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
             ColorGenerator generator=ColorGenerator.MATERIAL;
             TextDrawable textDrawable=TextDrawable.builder()
@@ -251,8 +332,8 @@ private static final String TAG="mainActivity";
                     .endConfig()
                     .buildRound(userName.toUpperCase().charAt(0)+"", generator.getColor(userName));
         prPhoto.setImageDrawable(textDrawable);
-        }
-        else {
+        }*/
+/*        else {
             //Toast.makeText(testIt.this,Uri.parse(userImageURLs)+":parsed",Toast.LENGTH_LONG).show();
             //prPhoto.setImageURI(Uri.parse(userImageURLs));
             Picasso.with(testIt.this)
@@ -260,7 +341,7 @@ private static final String TAG="mainActivity";
                     .centerCrop()
                     .resize(70, 70)
                     .into(prPhoto);
-        }
+        }*/
         prName.setText(userName);
         if(userEmail.equals("")) {
             if(userPhone.equals("")) {
@@ -286,18 +367,25 @@ private static final String TAG="mainActivity";
             t2=findViewById(R.id.latitudeText);
             t3=findViewById(R.id.speedText);
         updateLocation=findViewById(R.id.getLocation);
-        myTracker=new GPSTracker(testIt.this);
         updateLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(myTracker.cangetLocation()){
                         myTracker.getLocation();
+                        appBarLayout.setAnimation(new Animation() {
+                            @Override
+                            public void setDuration(long durationMillis) {
+                                super.setDuration(2500);
+                            }
+                        });
+                        appBarLayout.setExpanded(false,true);
                         /*if(snackbar.isShown()){
                             snackbar.dismiss();}*/
                         l1=new Location("A");
                         l1.setLatitude(myTracker.getLatitude());
                         l1.setLongitude(myTracker.getLongitude());
-                        snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude()+"\nspeed: 0km/h",Snackbar.LENGTH_LONG);
+                        updateMeOnserver();
+                        snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude(),Snackbar.LENGTH_LONG);
                         snackbar.setActionTextColor(getResources().getColor(R.color.whitecolor));
                         snackbar.setAction("dismiss", new View.OnClickListener() {
                             @Override
@@ -334,10 +422,14 @@ private static final String TAG="mainActivity";
                 }
             });
         }*/
-        OneSignal.startInit(this)
+
+
+
+
+        /*OneSignal.startInit(this)
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
-                .init();
+                .init();*/
     }
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -348,16 +440,42 @@ private static final String TAG="mainActivity";
         mGoogleApiClient.connect();
     }
 
-    @Override
-    public void onBackPressed() {
-       if(mDrawer.isDrawerOpen(GravityCompat.START)){
-           mDrawer.closeDrawer(GravityCompat.START);
-       }
-       else
-       {
-           finish();
-       }
+
+
+    public void updateMeOnserver(){
+        myTracker=new GPSTracker(getApplicationContext(),testIt.this);
+        String Token1= sharedPreferences.getString("token","");
+        if(isNetworkAvailable(getApplicationContext()))
+        {
+            String Token= FirebaseInstanceId.getInstance().getToken();
+            if(Token==null){
+                Token="";
+            }
+            if (!Token.equals(Token1)&&Token!="") {
+                editor.putString("token", Token).commit();
+            } else {
+                String urlToRequest = "https://myhighway.000webhostapp.com/api/updatetoken.php";
+                String userEmail = sharedPreferences.getString("userEmailkey", "");
+                String userPhone = sharedPreferences.getString("userMobNumberkey", "");
+                if (userPhone.length() > 10)
+                    userPhone = userPhone.substring(3, userPhone.length() - 1);
+                String user = (userPhone.equals("") ? userEmail : userPhone);
+                String latitude = "";
+                String longitude = "";
+                if (myTracker.cangetLocation()) {
+                    latitude = String.valueOf(myTracker.getLatitude());
+                    longitude = String.valueOf(myTracker.getLongitude());
+                }
+                String lastlocation = latitude + "," + longitude;
+                String s[] = {urlToRequest, "user", user, "token", Token, "location", lastlocation};
+                sendRequest sendToken = new sendRequest();
+                sendToken.execute(s);
+            }
+
+        }
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -379,12 +497,15 @@ private static final String TAG="mainActivity";
                 break;
             }
             case R.id.device:{
+                startActivity(new Intent(this,MyDevices.class));
                 break;
             }
             case R.id.vehicle:{
+                startActivity(new Intent(this,MyVehicle.class));
                 break;
             }
             case R.id.history:{
+                startActivity(new Intent(this,MyHistory.class));
                 break;
             }
             case R.id.status:{
@@ -437,16 +558,17 @@ private static final String TAG="mainActivity";
         myShareIntent.putExtra(Intent.EXTRA_TEXT,body);
         myShareIntent.setType("text/plain");
         startActivity(Intent.createChooser(myShareIntent,"Share SSHS Using"));*/
-        ApplicationInfo app =getApplicationContext().getApplicationInfo();
-        String filePath=app.sourceDir;
+        //ApplicationInfo app =getApplicationContext().getApplicationInfo();
+       // String filePath=app.publicSourceDir;
 
-        File FinalAPK=getApkFile(this,"com.example.akash.myhighway");
-        this.grantUriPermission(this.getPackageName(),Uri.parse(filePath), Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        this.getContentResolver().takePersistableUriPermission(Uri.parse(filePath), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        //File FinalAPK=getApkFile(this,"com.example.akash.myhighway1");
+        //this.grantUriPermission(this.getPackageName(),Uri.parse(filePath), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        //this.getContentResolver().takePersistableUriPermission(Uri.parse(filePath), Intent.FLAG_GRANT_READ_URI_PERMISSION);
         Intent intent=new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.setType("*/*");
-        intent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(filePath)));
+        intent.setType("application/*");
+
+        intent.putExtra(Intent.EXTRA_STREAM,Uri.fromFile(new File(getApplicationInfo().publicSourceDir)));
         startActivity(Intent.createChooser(intent,"Share SASH using"));
     }
     if(id==R.id.idinfo){
@@ -504,7 +626,9 @@ private static final String TAG="mainActivity";
                 Uri resultUri = result.getUri();
                 try {
                     prPhoto.setImageURI(resultUri);
-                    uploadImage(resultUri,"140420107001");
+                    String userEmail=sharedPreferences.getString("userEmailkey","");
+                    String userPhone=sharedPreferences.getString("userMobNumberkey","");
+                    uploadImage(resultUri,userPhone.equals("")? userEmail:userEmail);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -635,7 +759,7 @@ private static final String TAG="mainActivity";
         //progDialog.setMessage("Uploading, please wait...");
         //progDialog.show();
 
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 20, baos);
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 5, baos);
         byte[] imageBytes = baos.toByteArray();
         String uploadingUsingURL="https://myhighway.000webhostapp.com/api/upload.php";
         final String path=uri.getPath();
@@ -684,6 +808,7 @@ private static final String TAG="mainActivity";
         this.googleMap = googleMap;
         this.googleMap.setBuildingsEnabled(true);
         this.googleMap.setOnInfoWindowClickListener(this);
+        this.googleMap.setOnInfoWindowLongClickListener(this);
         this.googleMap.setInfoWindowAdapter(this);
         UiSettings uiSettings=this.googleMap.getUiSettings();
         //uiSettings.setAllGesturesEnabled(true);
@@ -726,10 +851,23 @@ private static final String TAG="mainActivity";
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        Marker marker=this.googleMap.addMarker(new MarkerOptions().position(current).title("Current Place"));
+        String address="";
+        Geocoder geocoder=new Geocoder(this, Locale.getDefault());
+        List<Address> addresses;
+        try {
+            addresses=geocoder.getFromLocation(lat,lon,1);
+            address=addresses.get(0).getAddressLine(0); //for get Full address from location
+            String city=addresses.get(0).getLocality();
+            String state=addresses.get(0).getAdminArea();
+            String country=addresses.get(0).getCountryName();
+            String postalcode=addresses.get(0).getPostalCode();
+            String knownName=addresses.get(0).getFeatureName();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Marker marker=this.googleMap.addMarker(new MarkerOptions().position(current).title("Current Place").snippet(address+""));
         marker.showInfoWindow();
-        build_retrofit_and_get_response("restaurant");
+        build_retrofit_and_get_response(currentPlaceType);
         //this.googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),2000,null);
 
@@ -757,6 +895,10 @@ private static final String TAG="mainActivity";
     private void build_retrofit_and_get_response(String type) {
 
         String url = "https://maps.googleapis.com/maps/";
+        if(!isNetworkAvailable(testIt.this)){
+           Toast.makeText(testIt.this,"Make Sure Internet is Working!",Toast.LENGTH_SHORT);
+            return;
+        }
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(url)
@@ -829,7 +971,7 @@ private static final String TAG="mainActivity";
                     distance=distance/1000;
                     String str=String.format("%2.2f",distance);
                     markerOptions[i].zIndex(90);
-                    markerOptions[i].describeContents();
+                   // markerOptions[i].describeContents();
                     markerOptions[i].snippet(str+"kms : "+vicinity);
 
 
@@ -976,6 +1118,15 @@ private static final String TAG="mainActivity";
 
     @Override
     protected void onStart() {
+        DatabaseHandler db=new DatabaseHandler(testIt.this);
+        CustomAdapter2 customAdapter=new CustomAdapter2(testIt.this,supportMapFragment,this.googleMap,db.getAllContacts());
+        LinearLayoutManager layoutManager= new LinearLayoutManager(testIt.this,LinearLayoutManager.HORIZONTAL,true);
+        layoutManager.setReverseLayout(true);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(customAdapter);
+        if(db.getContactsCount()>0)
+        recyclerView.scrollToPosition(View.SCROLL_INDICATOR_START);
         super.onStart();
         //FReference.child("online").setValue(true);
     }
@@ -1011,6 +1162,7 @@ private static final String TAG="mainActivity";
        Toast.makeText(this, ""+marker.getTitle(),Toast.LENGTH_SHORT).show();
     }
 
+
     @Override
     public View getInfoWindow(Marker marker) {
         return null;
@@ -1020,11 +1172,25 @@ private static final String TAG="mainActivity";
     public View getInfoContents(Marker marker) {
         View v= getLayoutInflater().inflate(R.layout.custom_marker,null);
         ImageView imageIcon=v.findViewById(R.id.imgView_map_info_content);
-        TextView textView=v.findViewById(R.id.info_infowindow);
-        imageIcon.setImageResource(R.drawable.profile);
+        final TextView titleView=v.findViewById(R.id.title_infowindow);
+        final TextView textView=v.findViewById(R.id.info_infowindow);
+        com.nostra13.universalimageloader.core.ImageLoader imageLoader= com.nostra13.universalimageloader.core.ImageLoader.getInstance();
+        imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
+        imageLoader.displayImage(sharedPreferences.getString("userPhotoURikey",""),imageIcon);
+        //imageIcon.setImageResource(R.drawable.profile);
+        titleView.setText(marker.getTitle());
         textView.setText(marker.getSnippet());
         return v;
     }
+
+    @Override
+    public void onInfoWindowLongClick(Marker marker) {
+        ClipboardManager clipboardManager= (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clipData=ClipData.newPlainText("SSHS:marker","SSHS:place\n"+marker.getTitle().toString()+"\n"+marker.getSnippet().toString());
+        clipboardManager.setPrimaryClip(clipData);
+        Toast.makeText(testIt.this,"Copied to Clipboard",Toast.LENGTH_SHORT).show();
+    }
+
 
     public class MyAsyncTask extends AsyncTask<String,String,String>{
         // AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
@@ -1061,9 +1227,58 @@ private static final String TAG="mainActivity";
         }
 
     }
+    public class sendRequest extends AsyncTask<String,String,String>{
+        // AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            responseOfSendRequest="";
+        }
 
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
 
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(final String... strings) {
+
+         RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
+         StringRequest stringRequest=new StringRequest(Request.Method.POST, strings[0], new com.android.volley.Response.Listener<String>() {
+             @Override
+             public void onResponse(String response) {
+                responseOfSendRequest=response;
+             }
+         }, new com.android.volley.Response.ErrorListener() {
+             @Override
+             public void onErrorResponse(VolleyError error) {
+
+             }
+         }){
+             @Override
+             protected Map<String, String> getParams() throws AuthFailureError {
+                 HashMap<String,String> params=new HashMap<String, String>();
+                 for(int i=1;i+1<=strings.length;i+=2)
+                    params.put(strings[i],strings[i+1]);
+                 return params;
+             }
+         };
+         requestQueue.add(stringRequest);
+
+            return null;
+        }
+    }
+
+    public boolean isNetworkAvailable(Context context){
+        ConnectivityManager manager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+         return (manager.getActiveNetworkInfo()!=null&&manager.getActiveNetworkInfo().isConnected());
+    }
 
 
 
@@ -1083,6 +1298,38 @@ private static final String TAG="mainActivity";
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
     Toast.makeText(testIt.this,"APi error:"+connectionResult.getErrorMessage().toString(),Toast.LENGTH_SHORT).show();
+    }
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {     //event on pressed BACK key
+        if(keyCode==KeyEvent.KEYCODE_BACK){
+            if(mDrawer.isDrawerOpen(GravityCompat.START)){
+                mDrawer.closeDrawer(GravityCompat.START);
+            }
+            else
+            {
+                showExitAlert();
+            }
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+    public void showExitAlert(){    //for show exit application alertdialog
+        AlertDialog dialog=new AlertDialog.Builder(this)
+                .setTitle("Warning")
+                .setCancelable(false)
+                .setMessage("Do You Want to Exit?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                    }
+                }).show();
     }
 
 }

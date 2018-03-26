@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
+import android.text.Html;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -66,7 +67,6 @@ public class SmsReceiver extends BroadcastReceiver {
                     }
                 }
 
-
                 if(body.contains("SSHS")) {
                     String values[]=body.split(",");
                     String values1[]=values[0].split(":");
@@ -108,6 +108,8 @@ public class SmsReceiver extends BroadcastReceiver {
             @Override
             public void onResponse(String response) {
               //  Toast.makeText(context, ""+response, Toast.LENGTH_LONG).show();
+                response=response.replaceAll("\\<.*?>","");
+                Toast.makeText(context, "response:"+response, Toast.LENGTH_LONG).show();
                 if(response.equals("success")||response.equals("success1")){
                     Toast.makeText(context, "problem request has been recorded!!", Toast.LENGTH_LONG).show();
                 }

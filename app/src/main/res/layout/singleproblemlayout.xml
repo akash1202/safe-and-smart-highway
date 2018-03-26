@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/pcard"
+    card_view:cardCornerRadius="10dp"
+    card_view:cardBackgroundColor="#ffffff"
+    card_view:cardElevation="5dp"
+    card_view:cardUseCompatPadding="true">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="match_parent"
+            android:weightSum="10">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/pimage"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:src="@drawable/com_facebook_profile_picture_blank_portrait"
+                card_view:civ_border_color="@color/colorWhatsapp"
+                card_view:civ_border_width="3dp"
+                android:layout_weight="8" />
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_weight="2"
+                android:layout_height="70dp"
+                android:layout_marginBottom="10dp"
+                android:weightSum="10"
+                android:layout_gravity="center_vertical">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:paddingRight="3dp"
+                    android:weightSum="10">
+
+                    <TextView
+                        android:id="@+id/pname"
+                        android:textSize="18sp"
+                        android:gravity="center"
+                        android:textStyle="bold"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Medical"
+                        android:layout_weight="0.8" />
+
+                    <ImageButton
+                        android:id="@+id/poptions"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:tint="@color/colorWhatsapp"
+                        android:background="#FFFFFF"
+                        android:src="@drawable/ic_more_dot_vert_black_24dp"
+                        android:layout_weight="9.2" />
+
+                    <Spinner
+                        android:id="@+id/pSpinner"
+                        android:elevation="10dp"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/pstatus"
+                    android:textColor="@color/colorWhatsapp"
+                    android:textSize="18sp"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Pending..."
+                    android:layout_weight="6" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginTop="5dp"
+            android:weightSum="10"
+            android:layout_height="25dp">
+
+            <ImageView
+                android:id="@+id/plocationlogo"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_weight="8"
+                android:tint="@color/colorWhatsapp"
+                android:src="@drawable/ic_location_on_black_24dp" />
+
+            <TextView
+                android:id="@+id/plocationtext"
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="25.457889,25.467895" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="5dp"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:weightSum="10"
+            android:layout_marginBottom="10dp"
+            android:paddingLeft="20dp"
+            android:layout_height="35dp">
+
+            <ImageView
+                android:id="@+id/pspeedlogo"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="9"
+                android:tint="@color/colorWhatsapp"
+                android:src="@drawable/speed" />
+
+            <TextView
+                android:id="@+id/pspeedtext"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="2"
+                android:gravity="center"
+                android:text="100 km/h" />
+        </LinearLayout>
+        <TextView
+            android:id="@+id/ptimetext"
+            android:layout_gravity="bottom|end"
+            android:paddingRight="5dp"
+            android:textColor="@color/colorWhatsapp"
+            android:text="21/02/11 9:30am"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</android.support.v7.widget.CardView>

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/singlemsglinearlayout"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="10dp"
+    android:layout_margin="5dp"
+    android:layout_gravity="end"
     android:orientation="vertical"
-    android:background="@drawable/message_shape"
-    >
+
+    android:background="@drawable/message_shape">
     <TextView
         android:text="Akash Anaghan"
         android:layout_height="wrap_content"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:id="@+id/musernametext"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
@@ -22,12 +24,12 @@
         android:layout_width="wrap_content"
         android:id="@+id/mmessagetext"
         android:layout_marginLeft="10dp"
-        android:layout_marginRight="15dp"
+        android:layout_marginRight="10dp"
         />
     <TextView
         android:text="9:15pm"
         android:layout_height="wrap_content"
-        android:layout_width="100dp"
+        android:layout_width="wrap_content"
         android:id="@+id/mtime"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="5dp"

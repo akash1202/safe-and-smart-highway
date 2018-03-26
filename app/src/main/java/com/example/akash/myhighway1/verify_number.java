@@ -56,6 +56,8 @@ public class verify_number extends AppCompatActivity {
         //verify1=(Button)findViewById(R.id.verifybutton);
         sendButton=(Button)findViewById(R.id.sendotpButtonverify);
         verifyButton=(Button)findViewById(R.id.verifyButtonverify);
+        mobnotext.setText("+91"+getIntent().getStringExtra("mobile"));
+        mobnotext.setEnabled(false);
        // resendButton=(Button)findViewById(R.id.resendbutton);
         //verify1.setOnClickListener(this);
         //t1.setText(getIntent().getStringExtra("email"));
@@ -175,7 +177,6 @@ public class verify_number extends AppCompatActivity {
                 verification_id=s;
                 token1 =forceResendingToken;
                 Toast.makeText(getApplicationContext(), "code has been sent!!!", Toast.LENGTH_SHORT).show();
-
             }
             @Override
             public void onVerificationFailed(FirebaseException e) {

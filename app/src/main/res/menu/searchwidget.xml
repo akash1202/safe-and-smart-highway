@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.akash.myhighway1.MyHistory"
+    >
+<item
+    android:id="@+id/searchButton"
+    android:icon="@android:drawable/ic_search_category_default"
+    app:showAsAction="always"
+    android:iconTint="@color/black_overlay"
+    android:title="@string/searchButtonText"
+    app:actionViewClass="android.support.v7.widget.SearchView"/>
+</menu>

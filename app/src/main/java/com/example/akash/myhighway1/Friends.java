@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.provider.ContactsContract;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,11 +39,10 @@ public class Friends extends AppCompatActivity {
     ListView listView;
     GridView gridView;
     RecyclerView recyclerView;
-    Button addmore;
+    FloatingActionButton addmore;
     String[] name1,number1,image1;
     RecyclerView.LayoutManager layoutManager;
     CustomAdapter customAdapter;
-    SharedPreferences.Editor editor;
     Integer totalfriends=0;
     Integer old1=0,new1=0;
     ArrayList<String> friendsname;
@@ -51,6 +51,7 @@ public class Friends extends AppCompatActivity {
     String[] options={"View","Remove","Chat"};
     private String PREFRENCENAME="AKASHSASH";
     SharedPreferences sharedPreferences;
+    SharedPreferences.Editor editor;
     public static final int REQUEST_CONTACT=12;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,16 +75,16 @@ public class Friends extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Friends");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-       addmore= (Button)findViewById(R.id.addfriendButton);
+       addmore= (FloatingActionButton) findViewById(R.id.addfriendButton);
        addmore.setOnClickListener(new View.OnClickListener() {
            @Override
            public void onClick(View view) {
                totalfriends=sharedPreferences.getInt("friends",0);
                old1=totalfriends;
-               if(totalfriends<10) {
+               if(totalfriends<1000) {
                    Intent intent = new Intent(Friends.this, ContactPickerActivity.class)
                            .putExtra(ContactPickerActivity.EXTRA_THEME, R.style.ContactPicker_Theme_Light)
-                           .putExtra(ContactPickerActivity.EXTRA_SELECT_CONTACTS_LIMIT, 10 - totalfriends)
+                           .putExtra(ContactPickerActivity.EXTRA_SELECT_CONTACTS_LIMIT, 1000 - totalfriends)
                            .putExtra(ContactPickerActivity.EXTRA_ONLY_CONTACTS_WITH_PHONE, true)
                            .putExtra(ContactPickerActivity.EXTRA_CONTACT_BADGE_TYPE, ContactPictureType.ROUND.name())
                            .putExtra(ContactPickerActivity.EXTRA_SHOW_CHECK_ALL, false)

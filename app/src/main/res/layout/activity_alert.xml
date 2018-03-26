@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.akash.myhighway1.Alert">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar9"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorWhatsapp"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+    </android.support.design.widget.AppBarLayout>
+    <RadioGroup
+        android:id="@+id/radioGroupAlert"
+        android:padding="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+    <RadioButton
+        android:id="@+id/emergencyrb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Emergency"
+        android:textColor="@color/colorWhatsapp"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="0dp" />
+    <RadioButton
+        android:id="@+id/urgentrb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Urgent"
+        android:textColor="@color/colorWhatsapp"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="0dp" />
+    <RadioButton
+        android:id="@+id/requestrb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Request"
+        android:textColor="@color/colorWhatsapp"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="0dp" />
+    <RadioButton
+        android:id="@+id/testrb"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Test"
+        android:textColor="@color/colorWhatsapp"
+        tools:layout_editor_absoluteX="105dp"
+        tools:layout_editor_absoluteY="0dp" />
+    </RadioGroup>
+    <EditText
+        android:layout_marginHorizontal="20dp"
+        android:id="@+id/alertMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorWhatsapp"
+        android:hint="what's going on?(Optional)"
+        />
+    <Button
+        android:layout_marginHorizontal="20dp"
+        android:id="@+id/sendAlert"
+        android:text="Send Alert"
+        android:textColor="@color/colorWhatsapp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp" />
+</LinearLayout>
+</ScrollView>

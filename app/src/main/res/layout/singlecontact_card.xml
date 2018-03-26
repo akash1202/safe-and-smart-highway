@@ -46,7 +46,7 @@
             android:textStyle="bold"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="gaurang babariya 12345"
+            android:text="fname lname 12345"
             android:layout_weight="0.8"
             />
         <ImageButton

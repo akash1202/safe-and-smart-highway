@@ -1,39 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/chatrelative"
+    android:background="@drawable/chat_bg"
     tools:context="com.example.akash.myhighway1.chatActivity">
-<android.support.v7.widget.RecyclerView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_above="@id/chatpanel"
-    android:id="@+id/recyclerviewofmessage"
-    >
-</android.support.v7.widget.RecyclerView>
+  <android.support.design.widget.CoordinatorLayout
+      android:layout_above="@id/chatpanel"
+      android:layout_width="match_parent"
+      android:layout_height="match_parent">
+      <android.support.v7.widget.RecyclerView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center_horizontal"
+          app:layout_behavior="@string/appbar_scrolling_view_behavior"
+          android:id="@+id/recyclerviewofmessage">
+      </android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar10"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/colorWhatsapp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            />
+    </android.support.design.widget.AppBarLayout>
+
+  </android.support.design.widget.CoordinatorLayout>
 <LinearLayout
     android:id="@+id/chatpanel"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:minHeight="45dp"
+    android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
     android:weightSum="1"
     android:padding="5dp"
-    >
+    android:background="@android:color/transparent">
     <EditText
+        android:layout_gravity="center"
+        android:paddingHorizontal="15dp"
+        android:scrollbars="vertical"
+        android:background="@drawable/messagebox_rectangle"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.2"
+        android:layout_height="wrap_content"
+        android:maxHeight="100dp"
+        android:minHeight="50dp"
+        android:layout_weight="0.15"
+        android:hint="Type a message"
+        android:focusable="true"
+        android:shadowColor="@color/colorWhatsapp"
+        android:textColorHighlight="@color/colorWhatsapp"
         android:id="@+id/typedMessage" />
-    <Button
-        android:text="Send"
-        android:textColor="@color/colorWhatsapp"
-        android:textAllCaps="false"
+    <ImageButton
+        android:layout_marginLeft="4dp"
+        android:layout_gravity="bottom"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.8"
-        android:id="@+id/sendMessageButton"
-        />
+        android:layout_height="50dp"
+        android:layout_weight="0.85"
+        android:scaleType="center"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_send_black_24dp"
+        android:id="@+id/sendMessageButton" />
 </LinearLayout>
 </RelativeLayout>

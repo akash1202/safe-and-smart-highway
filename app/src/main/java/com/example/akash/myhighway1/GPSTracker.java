@@ -1,9 +1,11 @@
 package com.example.akash.myhighway1;
 
+import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,27 +15,41 @@ import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by vishal on 11/12/17.
  */
 
-public class GPSTracker extends Service implements LocationListener
+public class GPSTracker extends Service implements LocationListener,android.location.GpsStatus.Listener
  {
      Context mcontext;
      public boolean isGPSEnabled=false;
      public boolean isNetworkEnabled=false;
+     public int FORCE_GPS=0;
      public static boolean cangetLocation=false;
      Location location=null;
+     Location lastlocation=null;
+     Activity activity;
      double longitude;
      double latitude;
+     private int FIRSTTIME=0;
      private long MIN_DISTANCE=5;  //for 1 meter
      private long MIN_TIME=1000*5; //for 1 second
      LocationManager locationManager;
-    public GPSTracker(Context context) {
+     SharedPreferences sharedPreferences;
+     private String PREFRENCENAME="AKASHSASH";
+     SharedPreferences.Editor editor;
+    public GPSTracker(Context context, Activity activity) {
             this.mcontext=context;
+            this.activity=activity;
+            sharedPreferences=context.getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
+            editor=sharedPreferences.edit();
             getLocation();
     }
     public Location getLocation(){
@@ -49,7 +65,7 @@ public class GPSTracker extends Service implements LocationListener
                         showSettingAlert();
                     } else {
                         cangetLocation = true;
-                        if (isNetworkEnabled) {
+                        if (isNetworkEnabled&&FORCE_GPS==0) {
                             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
                             if (locationManager != null) {
                                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
@@ -76,16 +92,16 @@ public class GPSTracker extends Service implements LocationListener
                     }
                 }
                 else{
-                    Toast.makeText(this,"provide GPS status access permission for better result",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this.mcontext,"provide GPS status access permission for better result",Toast.LENGTH_SHORT).show();
                 }
             }
             else{
-                Toast.makeText(this,"provide Network status access permission for better result",Toast.LENGTH_SHORT).show();
+                Toast.makeText(this.mcontext,"provide Network status access permission for better result",Toast.LENGTH_SHORT).show();
             }
         }
         catch (Exception e){
             e.printStackTrace();
-            Toast.makeText(this,"Exception for Location:"+e.getMessage(),Toast.LENGTH_LONG).show();
+            Toast.makeText(this.mcontext,"Exception for Location:"+e.getMessage(),Toast.LENGTH_LONG).show();
         }
         return location;
     }
@@ -139,8 +155,23 @@ public class GPSTracker extends Service implements LocationListener
 
      @Override
      public void onLocationChanged(Location location) {
-        Toast.makeText(mcontext,"Changed...."+location.getSpeed(),Toast.LENGTH_LONG).show();
+        //Toast.makeText(mcontext,"Changed...."+location.getSpeed(),Toast.LENGTH_LONG).show();
        // mcontext.getApplicationContext().
+         editor.putString("lastLocationLongkey", location.getLongitude()+"");
+         editor.putString("lastLocationLatkey", location.getLatitude()+"");
+         editor.commit();
+         FIRSTTIME+=1;
+         if(FIRSTTIME>1) {
+             this.lastlocation = this.location;
+             this.location = location;
+             double distance = this.location.distanceTo(this.lastlocation);
+             long duration = TimeUnit.MILLISECONDS.toSeconds(this.location.getTime() - this.lastlocation.getTime());
+             String speed = String.format("%.2f", (distance * 3600) / (duration * 1000));
+             //Toast.makeText(mcontext, "Changed....:" + speed + "km/h", Toast.LENGTH_LONG).show();
+             TextView speedView = (TextView) activity.findViewById(R.id.speedText);
+             speedView.setText("" + speed + " km/h");
+         }
+
      }
 
      @Override
@@ -157,4 +188,10 @@ public class GPSTracker extends Service implements LocationListener
      public void onProviderDisabled(String s) {
 
      }
+
+     @Override
+     public void onGpsStatusChanged(int i) {
+
+     }
+
  }

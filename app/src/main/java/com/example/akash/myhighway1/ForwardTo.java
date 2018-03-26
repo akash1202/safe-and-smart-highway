@@ -58,17 +58,24 @@ SharedPreferences.Editor editor;
                 String newNumber=forwardto.getText().toString();
                 String newCountryCode=forwardtocountrycode.getText().toString();
                String newCompleteNumber = newCountryCode + newNumber;
-                        if(isValidPhone(newCompleteNumber)) {
-                         editor.putString("forwardTo", newCompleteNumber).commit();
-                         forwardto.setText("");
-                         forwardtocountrycode.setText("");
-                         forwardtoInput.setVisibility(View.GONE);
-                         forwardtoButton.setEnabled(false);
-                         resetButton.setEnabled(true);
-                         savednumber.setText(newCompleteNumber);
-                         savednumber.setVisibility(View.VISIBLE);
-                         Toast.makeText(ForwardTo.this, "set number success!!", Toast.LENGTH_SHORT).show();
-                     }
+                        if(isValidPhone(newCompleteNumber)&&newNumber.length()==10) {
+                            if(newCompleteNumber.length()>10) {
+                                if(!newCompleteNumber.contains("+")&&newCompleteNumber.length()==12)
+                                    newCompleteNumber="+"+newCompleteNumber;
+                                editor.putString("forwardTo", newCompleteNumber).commit();
+                                forwardto.setText("");
+                                forwardtocountrycode.setText("");
+                                forwardtoInput.setVisibility(View.GONE);
+                                forwardtoButton.setEnabled(false);
+                                resetButton.setEnabled(true);
+                                savednumber.setText(newCompleteNumber);
+                                savednumber.setVisibility(View.VISIBLE);
+                                Toast.makeText(ForwardTo.this, "set number success!!", Toast.LENGTH_SHORT).show();
+                            }
+                            else if(newCompleteNumber.length()==10){
+                                Toast.makeText(ForwardTo.this, "Country Code is require!!", Toast.LENGTH_SHORT).show();
+                            }
+                        }
                 else{
                     Toast.makeText(ForwardTo.this, "Enter +91###6543210", Toast.LENGTH_SHORT).show();
                 }
@@ -92,7 +99,7 @@ SharedPreferences.Editor editor;
     private boolean isValidPhone(String phone)
     {
         boolean check=false;
-        if(!Pattern.matches("[a-zA-Z]+", phone))
+        if(Pattern.matches("[+]*[0-9]+", phone))
         {
             if(phone.length() < 6 || phone.length() > 13)
             {
