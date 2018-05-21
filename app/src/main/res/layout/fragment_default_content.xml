@@ -14,6 +14,16 @@
     >
     <!-- TODO: Update blank fragment layout -->
     <TextView
+        android:id="@+id/CurrentAlertStatus"
+        android:text="No Active Alert"
+        android:gravity="center"
+        android:textSize="18sp"
+        android:visibility="gone"
+        android:background="@color/colorWhatsapp"
+        android:textColor="@color/errorColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <TextView
         android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,21 +36,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_marginTop="0dp">
-        <Button
-            android:shadowDx="2"
-            android:shadowDy="4"
-            android:shadowColor="@color/colorWhatsapp1"
-            android:shadowRadius="5"
-            android:layout_marginTop="15dp"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/dashboard_background"
-            android:backgroundTint="@color/colorWhatsapp"
-            android:id="@+id/getLocation"
-            android:text="Update"
-            android:textAllCaps="false"
-            />
+
         <LinearLayout
             android:visibility="gone"
             android:orientation="horizontal"
@@ -103,34 +99,50 @@
                 android:text="Latitude"
                 android:visibility="gone"
                 />
-        </LinearLayout>
+        </LinearLayout>-->
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_marginTop="10dp"
         android:layout_height="wrap_content"
-        android:weightSum="30"
+        android:layout_gravity="center"
+        android:gravity="center"
         >
     <Spinner
         android:id="@+id/typeOfPlaceSpinner"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
-        android:layout_gravity="start"
-        />
+        android:gravity="center"
+        android:layout_gravity="center"/>
+        <Button
+            android:shadowDx="2"
+            android:shadowDy="4"
+            android:visibility="gone"
+            android:shadowColor="@color/colorWhatsapp1"
+            android:shadowRadius="5"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/dashboard_background"
+            android:backgroundTint="@color/colorWhatsapp"
+            android:id="@+id/getLocation"
+            android:text="Update"
+            android:textAllCaps="false"
+            />
         <Spinner
             android:id="@+id/radiousOfSearch"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="22"
-            android:layout_gravity="end"
-            />
+            android:gravity="center"
+            android:layout_gravity="center"   />
     </LinearLayout>
+
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="45dp">
-        <TextView
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+        <!--<TextView
             android:id="@+id/speedTitle"
             android:layout_weight="0.6"
             android:layout_width="match_parent"
@@ -146,14 +158,14 @@
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
                 android:text="0 km/h"
-                />
+                />-->
     </LinearLayout>
         <android.support.v7.widget.RecyclerView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/livefriends"
             android:divider="@null"
-            app:reverseLayout="true"
+            app:reverseLayout="false"
             android:orientation="horizontal"
             >
         </android.support.v7.widget.RecyclerView>

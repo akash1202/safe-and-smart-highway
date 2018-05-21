@@ -12,8 +12,7 @@
 
     <include layout="@layout/app_bar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
     <Button
         android:id="@+id/refreshtokenButton"
         android:layout_width="wrap_content"

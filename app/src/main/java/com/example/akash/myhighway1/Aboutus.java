@@ -36,7 +36,7 @@ public class Aboutus extends AppCompatActivity {
         SendEmail.putExtra(Intent.EXTRA_EMAIL,new String[]{"sashighway@gmail.com"});
         SendEmail.putExtra(Intent.EXTRA_SUBJECT,"FeedBack");
         SendEmail.putExtra(Intent.EXTRA_TEXT,"Dear....");
-        startActivity(Intent.createChooser(SendEmail,"Send Feedaback To SSHS admin"));
+        startActivity(Intent.createChooser(SendEmail,"Send Feedaback To sshs admin"));
     }
 
     @Override

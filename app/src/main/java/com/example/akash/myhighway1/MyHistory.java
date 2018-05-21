@@ -155,7 +155,7 @@ public class MyHistory extends AppCompatActivity {
                             List<Problem> problems=new ArrayList<Problem>();
                             for(int i=0;i<obj1.length();i++) {
                                 JSONObject obj2 = obj1.getJSONObject(i);
-/*                                    problemcode[i] = obj2.getString("emergency_code");
+/*                                  problemcode[i] = obj2.getString("emergency_code");
                                     location[i] = obj2.getString("location");
                                     speed[i] = obj2.getString("speed");
                                     mobilenumber[i] = obj2.getString("device_mobile_number");
@@ -170,7 +170,7 @@ public class MyHistory extends AppCompatActivity {
                                 tempProblem.setStatus(obj2.getString("status"));
                                 problems.add(tempProblem);
                             }
-                            customAdapter = new CustomAdapter3(context,getFragmentManager(),problems);
+                            customAdapter = new CustomAdapter3(MyHistory.this,getFragmentManager(),problems);
                             recyclerView.setAdapter(customAdapter);
                         } catch (Exception e) {
                             Toast.makeText(context, "Exception:" + e.getMessage().toString(), Toast.LENGTH_SHORT).show();

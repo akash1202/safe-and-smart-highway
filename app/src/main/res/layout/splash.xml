@@ -62,6 +62,14 @@
         android:visibility="gone"
         android:indeterminateTint="@color/colorWhatsapp"
         android:layout_gravity="center"/>
+    <com.wang.avi.AVLoadingIndicatorView
+        android:id="@+id/loader"
+        style="@style/AVLoadingIndicatorView.Small"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:indicatorName="LineScalePulseOutIndicator"
+        android:layout_gravity="center"
+        />
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

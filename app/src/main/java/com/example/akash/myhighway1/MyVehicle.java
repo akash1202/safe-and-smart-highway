@@ -13,7 +13,7 @@ public class MyVehicle extends AppCompatActivity {
         setContentView(R.layout.activity_my_vehicle);
         Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar6);
         //getActionBar().setCustomView(t);
-        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar); //first need to set toolbar then you can call only getSupportActionbar
         getSupportActionBar().setTitle("Vehicle");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }

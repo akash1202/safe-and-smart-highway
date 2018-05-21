@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="275dp"
+    android:layout_height="325dp"
+    android:layout_gravity="center">
+    <TextView
+        android:id="@+id/popupclosebutton"
+        android:layout_gravity="end"
+        android:gravity="center"
+        android:padding="7dp"
+        android:textColor="#000000"
+        android:textStyle="bold"
+        android:text="X"
+        android:textSize="18sp"
+        android:elevation="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:layout_width="275dp"
+    android:layout_height="325dp"
+    android:background="@color/whitecolor"
+    android:padding="5dp"
+    android:orientation="vertical">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/popupprofileimage"
+            android:src="@drawable/com_facebook_profile_picture_blank_square"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="15dp"/>
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/popuponlineIndicator"
+                android:layout_alignRight="@+id/popupprofileimage"
+                android:layout_alignTop="@+id/popupprofileimage"
+                android:background="@drawable/ring"
+                android:backgroundTint="@color/colorWhatsapp2"
+                android:layout_width="15dp"
+                android:layout_height="15dp"/>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/popupnametext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="Akash Anaghan"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/popuplastlocationtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="My Address" />
+        <TextView
+            android:id="@+id/popupmobilenumbertext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="9016435625"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/popupemailtext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="nouser@gmail.com"
+            android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/popuplastseentext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:text="2 hour ago"
+            android:textStyle="bold"/>
+
+
+    </LinearLayout>
+</LinearLayout>
+</FrameLayout>

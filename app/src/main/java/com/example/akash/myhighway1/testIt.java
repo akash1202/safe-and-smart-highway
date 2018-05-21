@@ -3,6 +3,8 @@ package com.example.akash.myhighway1;
 
 import android.*;
 import android.Manifest;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -16,6 +18,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder;
@@ -23,10 +26,11 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.net.ConnectivityManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -74,6 +78,9 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.example.akash.myhighway1.POJO.Example;
 import com.facebook.login.LoginManager;
+import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -97,12 +104,17 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.koushikdutta.ion.Ion;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.shinelw.library.ColorArcProgressBar;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 import com.squareup.picasso.Transformation;
 import com.theartofdev.edmodo.cropper.CropImage;
+import com.getbase.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -132,8 +144,11 @@ private static final String TAG="testItActivity";
     public static final String DATABASE_NAME="ContactManager";
     Button b1,updateLocation,getPlaceButton;
     FloatingActionButton floatingActionButton;
-    TextView t1,t2,t3,prEmail,prName;
+    FloatingActionsMenu fabmenu;
+    TextView t1,t2,prEmail,prName;
+    ColorArcProgressBar Speedometer;
     CircleImageView prPhoto;
+    com.nostra13.universalimageloader.core.ImageLoader imageLoader;
     Toolbar toolbar;
     DrawerLayout mDrawer;
     AppBarLayout appBarLayout;
@@ -148,6 +163,15 @@ private static final String TAG="testItActivity";
     GeoDataClient geoDataClient;
     MyAsyncTask task=new MyAsyncTask();
     GoogleMap googleMap;
+    Response<Example> myresponse;
+    MarkerOptions markerOptions[];
+    String placeImages[];
+    String placeName[];
+    String vicinity[];
+    Double placeLat[];
+    Double placeLng[];
+    String placeId[];
+    String placeMobNumber[];
     SupportMapFragment supportMapFragment;
 
     SharedPreferences sharedPreferences;
@@ -157,14 +181,36 @@ private static final String TAG="testItActivity";
 
 
     int PICK_CONTACT=3;
+    int ALLOW_FLOAT_WIDGET=51;
     static final int REQUEST_CONTACT=11;
-    int changed=0;
+    int changed=0,counter=0;
     Spinner Sp1,Sp2;
     Uri changedprImageUri=null;
     Location l1,l2;
     LocationRequest mLocationRequest=null;
     GoogleApiClient mGoogleApiClient=null;
     private int PROXIMITY_RADIUS = 1000;
+
+    String[] placesTypeSpinner1={"accounting","airport","atm","bank","bicycle_store","book_store",
+            "bus_station","cafe","car_dealer","car_rental","car_repair","car_wash","church","city_hall","clothing_store","convenience_store",
+            "courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","fire_station","funeral_home","furniture_store",
+            "gas_station","gym","hardware_store","hindu_temple","home_goods_store","hospital","insurance_agency","laundry","lawyer",
+            "library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_theater","moving_company",
+            "museum","painter","park","parking","pet_store","pharmacy","physiotherapist","plumber","police","post_office","restaurant",
+            "roofing_contractor","shoe_store","shopping_mall","stadium","storage","store","subway_station","supermarket","synagogue","taxi_stand",
+            "train_station","transit_station","travel_agency","veterinary_care","zoo"};
+    String[] placesTypeSpinner={"accounting","airport","amusement_park","aquarium","art_gallery","atm","bakery","bank","bar","beauty_salon","bicycle_store","book_store","bowling_alley",
+            "bus_station","cafe","campground","car_dealer","car_rental","car_repair","car_wash","casino","cemetery","church","city_hall","clothing_store","convenience_store",
+            "courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","fire_station","florist","funeral_home","furniture_store",
+            "gas_station","gym","hair_care","hardware_store","hindu_temple","home_goods_store","hospital","insurance_agency","jewelry_store","laundry","lawyer",
+            "library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_rental","movie_theater","moving_company",
+            "museum","night_club","painter","park","parking","pet_store","pharmacy","physiotherapist","plumber","police","post_office","real_estate_agency","restaurant",
+            "roofing_contractor","rv_park,school","shoe_store","shopping_mall","spa","stadium","storage","store","subway_station","supermarket","synagogue","taxi_stand",
+            "train_station","transit_station","travel_agency","veterinary_care","zoo"};
+    String[] radious1={"1km","2km","3km","5km","7km","10km","15km","20km"};
+    String[] radious={"1","2","3","5","7","10","15","20"};
+    ArrayAdapter<String> placeTypes;
+    ArrayAdapter<String> radiousTypes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,6 +222,7 @@ private static final String TAG="testItActivity";
             finish();
     }
     floatingActionButton=(FloatingActionButton) findViewById(R.id.fab);
+        floatingActionButton.setTitle("Alert");
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -187,6 +234,78 @@ private static final String TAG="testItActivity";
                 startActivity(new Intent(testIt.this,Alert.class));
             }
         });
+        fabmenu=(FloatingActionsMenu)findViewById(R.id.fabmenu);
+        FloatingActionButton c=new FloatingActionButton(getBaseContext());
+        c.setColorNormal(getResources().getColor(R.color.whitecolor));
+        c.setColorPressed(getResources().getColor(R.color.whitecolor));
+        c.setIconDrawable(getResources().getDrawable(R.drawable.alarm));
+        c.setSize(FloatingActionButton.SIZE_NORMAL);
+        c.setTitle("Alert");
+        c.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabmenu.collapseImmediately();
+                User user=new User(testIt.this);
+                if(myTracker.cangetLocation()) {
+                    user.setLastLocationLat(myTracker.getLatitude());
+                    user.setLastLocationLong(myTracker.getLongitude());
+                }
+                startActivity(new Intent(testIt.this,Alert.class));
+            }
+        });
+        FloatingActionButton d=new FloatingActionButton(getBaseContext());
+        d.setColorNormal(getResources().getColor(R.color.whitecolor));
+        d.setColorPressed(getResources().getColor(R.color.whitecolor));
+        d.setIconDrawable(getResources().getDrawable(R.drawable.ic_search_black_24dp));
+        d.setSize(FloatingActionButton.SIZE_NORMAL);
+        d.setTitle("Search Nearby");
+        d.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                fabmenu.collapseImmediately();
+                if(myTracker.cangetLocation()){
+                    myTracker.getLocation();
+                    appBarLayout.setAnimation(new Animation() {
+                        @Override
+                        public void setDuration(long durationMillis) {
+                            super.setDuration(2500);
+                        }
+                    });
+                    appBarLayout.setExpanded(false,true);
+                        /*if(snackbar.isShown()){
+                            snackbar.dismiss();}*/
+                    l1=new Location("A");
+                    l1.setLatitude(myTracker.getLatitude());
+                    l1.setLongitude(myTracker.getLongitude());
+                    updateMeOnserver();
+                    snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude(),Snackbar.LENGTH_LONG);
+                    snackbar.setActionTextColor(getResources().getColor(R.color.whitecolor));
+                    snackbar.setAction("dismiss", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            snackbar.dismiss();
+                        }
+                    });
+                    View sbView=snackbar.getView();
+                    sbView.setBackgroundColor(getResources().getColor(R.color.colorWhatsapp));
+                    snackbar.setDuration(Snackbar.LENGTH_INDEFINITE).show();
+                    // t1.setText(myTracker.getLongitude()+"");
+                    // t2.setText(myTracker.getLatitude()+"");
+                    //onMapReady(googleMap);
+                        setLocationOnMap(myTracker.getLatitude(), myTracker.getLongitude());
+                        /*BlurDialogFragment blurDialog=new BlurDialogFragment();
+                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                        transaction.add(blurDialog,"hello").commit();*/
+                }
+                else{
+                    myTracker.showSettingAlert();
+                }
+            }
+        });
+
+        //fabmenu.addButton(floatingActionButton);
+        fabmenu.addButton(c);
+        fabmenu.addButton(d);
 
        /* Fragment fragment=new DefaultContentFragment();
         FragmentTransaction transaction=getSupportFragmentManager().beginTransaction();
@@ -226,31 +345,24 @@ private static final String TAG="testItActivity";
         getSupportActionBar().setCustomView(R.layout.app_bar);*/
         myTracker=new GPSTracker(getApplicationContext(),testIt.this);
         updateMeOnserver();
+        Speedometer=(ColorArcProgressBar) findViewById(R.id.speedometer);
         recyclerView=(RecyclerView) findViewById(R.id.livefriends);
         Sp1=(Spinner) findViewById(R.id.typeOfPlaceSpinner);
         Sp2=(Spinner) findViewById(R.id.radiousOfSearch);
 
-        String[] placesTypeSpinner={"accounting","airport","amusement_park","aquarium","art_gallery","atm","bakery","bank","bar","beauty_salon","bicycle_store","book_store","bowling_alley",
-                "bus_station","cafe","campground","car_dealer","car_rental","car_repair","car_wash","casino","cemetery","church","city_hall","clothing_store","convenience_store",
-                "courthouse","dentist","department_store","doctor","electrician","electronics_store","embassy","fire_station","florist","funeral_home","furniture_store",
-                "gas_station","gym","hair_care","hardware_store","hindu_temple","home_goods_store","hospital","insurance_agency","jewelry_store","laundry","lawyer",
-                "library","liquor_store","local_government_office","locksmith","lodging","meal_delivery","meal_takeaway","mosque","movie_rental","movie_theater","moving_company",
-                "museum","night_club","painter","park","parking","pet_store","pharmacy","physiotherapist","plumber","police","post_office","real_estate_agency","restaurant",
-                "roofing_contractor","rv_park,school","shoe_store","shopping_mall","spa","stadium","storage","store","subway_station","supermarket","synagogue","taxi_stand",
-                "train_station","transit_station","travel_agency","veterinary_care","zoo"};
-        String[] radious={"1","2","3","5","7","10","15","20"};
-        ArrayAdapter<String> placeTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,placesTypeSpinner);
-        ArrayAdapter<String> radiousTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,radious);
+
+
+        placeTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,placesTypeSpinner);
+        radiousTypes=new ArrayAdapter<String>(testIt.this,R.layout.places_spinner_item,R.id.placeTypeSingleItem,radious);
         //placeTypes.setDropDownViewResource(R.layout.places_spinner_item);
         Sp1.setAdapter(placeTypes);
-        Sp1.setSelection(placeTypes.getPosition("hospital"));
         Sp2.setAdapter(radiousTypes);
         Sp1.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView tempTextView=(TextView) view.findViewById(R.id.placeTypeSingleItem);
-                Toast.makeText(testIt.this,""+tempTextView.getText().toString(),Toast.LENGTH_SHORT).show();
-                currentPlaceType=tempTextView.getText().toString();
+                //TextView tempTextView=(TextView) findViewById(R.id.placeTypeSingleItem);
+                //Toast.makeText(testIt.this,""+tempTextView.getText().toString(),Toast.LENGTH_SHORT).show();
+                currentPlaceType=placesTypeSpinner[i]+"";
             }
 
             @Override
@@ -261,8 +373,8 @@ private static final String TAG="testItActivity";
         Sp2.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-             TextView tempTextView=(TextView) view.findViewById(R.id.placeTypeSingleItem);
-              PROXIMITY_RADIUS=Integer.parseInt(tempTextView.getText().toString())*1000;
+             //TextView tempTextView=(TextView) view.findViewById(R.id.placeTypeSingleItem);
+              PROXIMITY_RADIUS=Integer.parseInt(radious[i])*1000;
             }
 
             @Override
@@ -315,7 +427,7 @@ private static final String TAG="testItActivity";
                         .placeholder(R.drawable.com_facebook_profile_picture_blank_square)
                         .error(R.drawable.com_facebook_profile_picture_blank_square)
                         .into(prPhoto);*/
-                com.nostra13.universalimageloader.core.ImageLoader imageLoader= com.nostra13.universalimageloader.core.ImageLoader.getInstance();
+                imageLoader= com.nostra13.universalimageloader.core.ImageLoader.getInstance();
                 imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
                 imageLoader.displayImage(userImageURLs,prPhoto);
             } catch (Exception e) {
@@ -363,10 +475,11 @@ private static final String TAG="testItActivity";
             prEmail.setText(userEmail);
        supportMapFragment=((SupportMapFragment) this.getSupportFragmentManager().findFragmentById(R.id.mapFragment));
        supportMapFragment.getMapAsync(testIt.this);
-            t1=findViewById(R.id.longitudeText);
-            t2=findViewById(R.id.latitudeText);
-            t3=findViewById(R.id.speedText);
+            //t1=findViewById(R.id.longitudeText);
+            //t2=findViewById(R.id.latitudeText);
+            //t3=findViewById(R.id.speedText);
         updateLocation=findViewById(R.id.getLocation);
+        updateLocation.setVisibility(View.GONE);
         updateLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -400,6 +513,9 @@ private static final String TAG="testItActivity";
                        // t2.setText(myTracker.getLatitude()+"");
                         //onMapReady(googleMap);
                         setLocationOnMap(myTracker.getLatitude(),myTracker.getLongitude());
+                        /*BlurDialogFragment blurDialog=new BlurDialogFragment();
+                        FragmentTransaction transaction=getFragmentManager().beginTransaction();
+                        transaction.add(blurDialog,"hello").commit();*/
                     }
                     else{
                         myTracker.showSettingAlert();
@@ -430,7 +546,25 @@ private static final String TAG="testItActivity";
                 .inFocusDisplaying(OneSignal.OSInFocusDisplayOption.Notification)
                 .unsubscribeWhenNotificationsAreDisabled(true)
                 .init();*/
+
+
     }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+       /*if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+           Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+           startActivityForResult(intent,ALLOW_FLOAT_WIDGET);
+       }
+       else{
+           initializeWidget();
+       }*/
+    }
+    public void initializeWidget(){
+        startService(new Intent(getApplicationContext(),FloatingView.class));
+    }
+
     protected synchronized void buildGoogleApiClient() {
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
@@ -557,7 +691,7 @@ private static final String TAG="testItActivity";
         myShareIntent.putExtra(Intent.EXTRA_SUBJECT,subject);
         myShareIntent.putExtra(Intent.EXTRA_TEXT,body);
         myShareIntent.setType("text/plain");
-        startActivity(Intent.createChooser(myShareIntent,"Share SSHS Using"));*/
+        startActivity(Intent.createChooser(myShareIntent,"Share sshs Using"));*/
         //ApplicationInfo app =getApplicationContext().getApplicationInfo();
        // String filePath=app.publicSourceDir;
 
@@ -575,6 +709,10 @@ private static final String TAG="testItActivity";
         Intent myInfoIntent=new Intent(Intent.ACTION_SHOW_APP_INFO);
         startActivity(myInfoIntent);
     }
+    /*if(id==R.id.idsetting_option){
+        Intent settingIntent=new Intent(testIt.this,SettingsActivity.class);
+        startActivity(settingIntent);
+    }*/
     if(id==R.id.idlogout){
         getApplicationContext().deleteDatabase(DATABASE_NAME);
         sharedPreferences.edit().clear().commit();
@@ -618,6 +756,9 @@ private static final String TAG="testItActivity";
                 }
                 phoneCursor.close();
             }*/
+        }
+        if(requestCode==ALLOW_FLOAT_WIDGET){
+            initializeWidget();
         }
 
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -819,7 +960,7 @@ private static final String TAG="testItActivity";
         if(myTracker.cangetLocation()){
             myTracker.getLocation();
             LatLng previousUpdateLocation = new LatLng(myTracker.getLatitude(), myTracker.getLongitude());
-            this.googleMap.addMarker(new MarkerOptions().position(previousUpdateLocation).title("Current Location1"));
+            this.googleMap.addMarker(new MarkerOptions().position(previousUpdateLocation).title("Current Location"));
             this.googleMap.moveCamera(CameraUpdateFactory.newLatLng(previousUpdateLocation));
         }
         buildGoogleApiClient();
@@ -856,21 +997,24 @@ private static final String TAG="testItActivity";
         List<Address> addresses;
         try {
             addresses=geocoder.getFromLocation(lat,lon,1);
+           if(addresses!=null&addresses.size()>0){
             address=addresses.get(0).getAddressLine(0); //for get Full address from location
             String city=addresses.get(0).getLocality();
             String state=addresses.get(0).getAdminArea();
             String country=addresses.get(0).getCountryName();
             String postalcode=addresses.get(0).getPostalCode();
             String knownName=addresses.get(0).getFeatureName();
+           }
         } catch (IOException e) {
             e.printStackTrace();
         }
         Marker marker=this.googleMap.addMarker(new MarkerOptions().position(current).title("Current Place").snippet(address+""));
+        marker.setTag((new User(testIt.this)).getUserMobNumber());
+        marker.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
         marker.showInfoWindow();
         build_retrofit_and_get_response(currentPlaceType);
         //this.googleMap.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         this.googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition),2000,null);
-
     }
 
     //place type in google map
@@ -911,31 +1055,37 @@ private static final String TAG="testItActivity";
         call.enqueue(new Callback<Example>() {
             @Override
             public void onResponse(Call<Example> call,Response<Example> response) {
-                final Response<Example> myresponse = response;
+                myresponse = response;
                 Log.d("url:",response.toString());
                 //mMap.clear();
                 // This loop will go through all the results and add marker on each location.
                 final int total=response.body().getResults().size();
-                 final MarkerOptions markerOptions[] = new MarkerOptions[total];
-                 final String placeImages[]=new String[total];
+                 markerOptions = new MarkerOptions[total];
+                 placeImages=new String[total];
+                 placeLat=new Double[total];
+                 placeLng=new Double[total];
+                 placeName=new String[total];
+                 vicinity=new String[total];
+                 placeId=new String[total];
                 //final Bitmap bitmapImage[] = new Bitmap[response.body().getResults().size()];
                 for (int i = 0; i < total; i++) {
-                    Double lat = myresponse.body().getResults().get(i).getGeometry().getLocation().getLat();
-                    Double lng = myresponse.body().getResults().get(i).getGeometry().getLocation().getLng();
-                    final String placeName = myresponse.body().getResults().get(i).getName();
-                    String vicinity = myresponse.body().getResults().get(i).getVicinity();
+                    placeLat[i] = myresponse.body().getResults().get(i).getGeometry().getLocation().getLat();
+                    placeLng[i] = myresponse.body().getResults().get(i).getGeometry().getLocation().getLng();
+                    placeName[i] = myresponse.body().getResults().get(i).getName();
+                    vicinity[i] = myresponse.body().getResults().get(i).getVicinity();
                     placeImages[i] = myresponse.body().getResults().get(i).getIcon();
-                    Log.d(placeName,placeImages[i]);
+                    placeId[i]=myresponse.body().getResults().get(i).getPlaceId();
+                    Log.d(placeName[i],placeId[i]);
                     markerOptions[i] = new MarkerOptions();
-                    LatLng latLng = new LatLng(lat, lng);
+                    LatLng latLng = new LatLng(placeLat[i], placeLng[i]);
                     // Position of Marker on Map
                     markerOptions[i].position(latLng);
                     l2=new Location("B");
-                    l2.setLatitude(lat);
-                    l2.setLongitude(lng);
+                    l2.setLatitude(placeLat[i]);
+                    l2.setLongitude(placeLng[i]);
 
                     // Adding Title to the Marker
-                    markerOptions[i].title(placeName);
+                    markerOptions[i].title(placeName[i]);
                    // markerOptions[i].icon(BitmapDescriptorFactory.fromResource(R.drawable.com_facebook_profile_picture_blank_square));
                     final int j=i;
 
@@ -972,10 +1122,11 @@ private static final String TAG="testItActivity";
                     String str=String.format("%2.2f",distance);
                     markerOptions[i].zIndex(90);
                    // markerOptions[i].describeContents();
-                    markerOptions[i].snippet(str+"kms : "+vicinity);
+                    markerOptions[i].snippet(str+"kms : "+vicinity[i]);
 
 
                     Marker markertemp=googleMap.addMarker(markerOptions[i]);
+                    markertemp.setTag(placeId[i]);
                     PicassoMarker marker = new PicassoMarker(markertemp);
                     //"https://instagram.fbom1-2.fna.fbcdn.net/vp/4194fe04f692b50fb164ff8d4779fe1d/5B24DAA7/t51.2885-19/s150x150/22801907_169073640345040_1768792490271309824_n.jpg"
                     Picasso.with(testIt.this).load(placeImages[i]).into(marker);
@@ -1051,27 +1202,27 @@ private static final String TAG="testItActivity";
         if(requestCode==1){
             if(grantResults[0]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Gps access for Better result!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
             if(grantResults[1]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
             if(grantResults[2]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide send SMS for Better result!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
             if(grantResults[3]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Permission for Read External Storage!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
             if(grantResults[4]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Permission for Write External Storage!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
             if(grantResults[5]== PackageManager.PERMISSION_DENIED){
                 Toast.makeText(this,"Provide Permission for read Network status!",Toast.LENGTH_SHORT).show();
-                (new testIt.MyAsyncTask()).execute();
+                //(new testIt.MyAsyncTask()).execute();
             }
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -1127,9 +1278,35 @@ private static final String TAG="testItActivity";
         recyclerView.setAdapter(customAdapter);
         if(db.getContactsCount()>0)
         recyclerView.scrollToPosition(View.SCROLL_INDICATOR_START);
+        Sp1.setSelection(placeTypes.getPosition("hospital"));
+        /*TapTargetView.showFor(this,TapTarget.forView(findViewById(R.id.fabmenu),
+                "Emergency Button","Press it while you in any problem")
+                        .outerCircleColor(R.color.errorColor)
+                        .outerCircleAlpha(0.96f)
+                        .targetCircleColor(R.color.whitecolor)
+                        .titleTextSize(20)
+                        .titleTextColor(R.color.whitecolor)
+                        .descriptionTextSize(10)
+                        .descriptionTextColor(R.color.whitecolor)
+                        .textColor(R.color.whitecolor)
+                        .textTypeface(Typeface.SANS_SERIF)
+                        .dimColor(R.color.black_overlay)
+                        .drawShadow(true)
+                        .cancelable(false)
+                        .transparentTarget(true)
+                        .targetRadius(30),
+                new TapTargetView.Listener(){
+                    @Override
+                    public void onTargetClick(TapTargetView view) {
+                        super.onTargetClick(view);
+                        //doSomething();
+                    }
+                });*/
         super.onStart();
         //FReference.child("online").setValue(true);
     }
+
+
 
     @Override
     protected void onStop() {
@@ -1159,7 +1336,20 @@ private static final String TAG="testItActivity";
     @Override
     public void onInfoWindowClick(Marker marker) {
         marker.showInfoWindow();
-       Toast.makeText(this, ""+marker.getTitle(),Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "" + marker.getTitle(), Toast.LENGTH_SHORT).show();
+        String s1="ChIJN1t_tDeuEmsRUsoyG83frY4"; //sample for placeid with length=27
+        if(marker.getTag()!=null) {
+            String s2 = marker.getTag().toString();
+            Log.d("tag in infowindow:",s2);
+            if (s2.length() >= 27) {
+                Log.d("tag in infowindow:",s2+" "+s2.length());
+                PlaceRequest placeRequest = new PlaceRequest(testIt.this);
+                String s[]={"https://maps.googleapis.com/maps/api/place/details/json?placeid="+s2+"&key=AIzaSyDmvpiTTaow0D-BpyQeKGfdBeOTWvaWqWo"};
+                //String params[] = {"https://maps.googleapis.com/maps/api/place/details/json", "placeid", s2, "key", "AIzaSyDmvpiTTaow0D-BpyQeKGfdBeOTWvaWqWo"};
+                placeRequest.execute(s);
+                //showExitAlert();
+            }
+        }
     }
 
 
@@ -1172,11 +1362,16 @@ private static final String TAG="testItActivity";
     public View getInfoContents(Marker marker) {
         View v= getLayoutInflater().inflate(R.layout.custom_marker,null);
         ImageView imageIcon=v.findViewById(R.id.imgView_map_info_content);
-        final TextView titleView=v.findViewById(R.id.title_infowindow);
-        final TextView textView=v.findViewById(R.id.info_infowindow);
-        com.nostra13.universalimageloader.core.ImageLoader imageLoader= com.nostra13.universalimageloader.core.ImageLoader.getInstance();
-        imageLoader.init(ImageLoaderConfiguration.createDefault(getApplicationContext()));
-        imageLoader.displayImage(sharedPreferences.getString("userPhotoURikey",""),imageIcon);
+         TextView titleView=v.findViewById(R.id.title_infowindow);
+         TextView textView=v.findViewById(R.id.info_infowindow);
+        if(marker.getTag()!=null) {
+            Log.d("in tag:",marker.getTag().toString());
+            Log.d("in sharedpreference:",(new User(testIt.this)).getUserMobNumber().toString());
+            if (marker.getTag().toString().equals((new User(testIt.this)).getUserMobNumber())) {
+                Log.d("in matching:",sharedPreferences.getString("userPhotoURikey", ""));
+                imageLoader.displayImage(sharedPreferences.getString("userPhotoURikey", ""), imageIcon);
+            }
+        }
         //imageIcon.setImageResource(R.drawable.profile);
         titleView.setText(marker.getTitle());
         textView.setText(marker.getSnippet());
@@ -1186,7 +1381,7 @@ private static final String TAG="testItActivity";
     @Override
     public void onInfoWindowLongClick(Marker marker) {
         ClipboardManager clipboardManager= (ClipboardManager) getApplicationContext().getSystemService(Context.CLIPBOARD_SERVICE);
-        ClipData clipData=ClipData.newPlainText("SSHS:marker","SSHS:place\n"+marker.getTitle().toString()+"\n"+marker.getSnippet().toString());
+        ClipData clipData=ClipData.newPlainText("sshs:marker","sshs:place\n"+marker.getTitle().toString()+"\n"+marker.getSnippet().toString()+"\n"+"http://www.google.com/maps/place/"+marker.getPosition().latitude+","+marker.getPosition().longitude);
         clipboardManager.setPrimaryClip(clipData);
         Toast.makeText(testIt.this,"Copied to Clipboard",Toast.LENGTH_SHORT).show();
     }
@@ -1275,6 +1470,71 @@ private static final String TAG="testItActivity";
         }
     }
 
+    public class PlaceRequest extends AsyncTask<String,String,String>{
+        // AVLoadingIndicatorView loader=new AVLoadingIndicatorView(MainActivity.this);
+        Context context;
+        public PlaceRequest(Context context){
+            this.context=context;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            responseOfSendRequest="";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            super.onProgressUpdate(values);
+        }
+
+        @Override
+        protected String doInBackground(final String... strings) {
+
+            RequestQueue requestQueue= Volley.newRequestQueue(getApplicationContext());
+            StringRequest stringRequest=new StringRequest(Request.Method.GET, strings[0], new com.android.volley.Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    responseOfSendRequest=response;
+                    try {
+                        Log.d("in response",response);
+                        JSONObject jsonObject1=new JSONObject(response);
+                        JSONObject jsonObject=jsonObject1.getJSONObject("result");
+                        if(jsonObject.has("international_phone_number")) {
+                            String PhoneNumber = jsonObject.getString("international_phone_number");
+                            PhoneNumber = PhoneNumber.replaceAll(" ", "");
+                            callToNumber("Help Center", PhoneNumber);
+                        }
+                        else{
+                            callToNumber("Help Center","EMPTY");
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new com.android.volley.Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    HashMap<String,String> params=new HashMap<String, String>();
+                    for(int i=1;i+1<=strings.length;i+=2)
+                        params.put(strings[i],strings[i+1]);
+                    return params;
+                }
+            };
+            requestQueue.add(stringRequest);
+            return null;
+        }
+    }
+
     public boolean isNetworkAvailable(Context context){
         ConnectivityManager manager=(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
          return (manager.getActiveNetworkInfo()!=null&&manager.getActiveNetworkInfo().isConnected());
@@ -1313,6 +1573,8 @@ private static final String TAG="testItActivity";
         }
         return super.onKeyDown(keyCode, event);
     }
+
+
     public void showExitAlert(){    //for show exit application alertdialog
         AlertDialog dialog=new AlertDialog.Builder(this)
                 .setTitle("Warning")
@@ -1331,5 +1593,41 @@ private static final String TAG="testItActivity";
                     }
                 }).show();
     }
+    public void callToNumber(String title, final String number){    //for show PhoneNumber application alertdialog
+        if(number.equals("EMPTY")){
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setMessage("Sorry No Number Available!")
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                        }
+                    }).show();
+        }
+        else {
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setTitle(title)
+                    .setCancelable(false)
+                    .setMessage("Do You Want to make a Call?")
+                    .setPositiveButton("Call", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            Intent dialIntent = new Intent(Intent.ACTION_DIAL);
+                            dialIntent.setData(Uri.parse("tel:" + number));
+                            startActivity(dialIntent);
+                        }
+                    })
+                    .setNegativeButton("Close", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
 
+                        }
+                    }).show();
+        }
+    }
+
+
+    private class ALLOW_FLOAT_WIDGET {
+    }
 }

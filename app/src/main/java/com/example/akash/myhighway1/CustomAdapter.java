@@ -107,6 +107,7 @@ public class CustomAdapter extends RecyclerView.Adapter<CustomAdapter.MyViewHold
                 .into(holder.profilecircleImageView);
     }
 
+
     @Override
     public int getItemCount() {   return this.ContactList.size();  }
     public void updateContactList(List<MyContact> ContactList){

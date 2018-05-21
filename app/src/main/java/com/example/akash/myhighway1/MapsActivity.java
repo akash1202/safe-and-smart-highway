@@ -51,7 +51,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        myTracker=new GPSTracker(MapsActivity.this,this);
+        myTracker=new GPSTracker(MapsActivity.this,this);// needs to change in gps tracker as activity
         //swipeRefreshLayout=(SwipeRefreshLayout) findViewById(R.id.swipeContainer);
         //swipeRefreshLayout.setOnRefreshListener(this);
         floatingActionButton=(FloatingActionButton) findViewById(R.id.floatingRefereshButton);

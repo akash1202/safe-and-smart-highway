@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -66,14 +67,24 @@ public class Alert extends AppCompatActivity {
         radioGroupAlert.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int i) {
-            switch(i){
-                case R.id.emergencyrb:  AlertType=""+EMERGENCY;
+                RadioButton radioButton;
+                switch(i){
+                case R.id.emergencyrb:
+                    radioButton=(RadioButton) findViewById(R.id.emergencyrb);
+                    //radioButton.setHighlightColor();
+                    AlertType=""+EMERGENCY;
                     break;
-                case R.id.urgentrb:     AlertType=""+URGENT;
+                case R.id.urgentrb:
+                    radioButton=(RadioButton) findViewById(R.id.urgentrb);
+                    AlertType=""+URGENT;
                     break;
-                case R.id.requestrb:    AlertType=""+REQUEST;
+                case R.id.requestrb:
+                    radioButton=(RadioButton) findViewById(R.id.requestrb);
+                    AlertType=""+REQUEST;
                     break;
-                case R.id.testrb:       AlertType=""+TEST;
+                case R.id.testrb:
+                    radioButton=(RadioButton) findViewById(R.id.testrb);
+                    AlertType=""+TEST;
                     break;
                 default: break;
             }
@@ -83,6 +94,8 @@ public class Alert extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                // hideKeyboard();
+
+                SendAlert.setEnabled(false);
                 if(!AlertType.equals("")&&totalfriends>0&&!myNumber.equals("")&&isNetworkAvailable(Alert.this)) {
                     String AlertDesc = ","+AlertType + (AlertMessage.getText().toString().equals("")? ",NA":(","+AlertMessage.getText().toString()));
                     User user=new User(Alert.this);
@@ -97,13 +110,17 @@ public class Alert extends AppCompatActivity {
                 }
                 else if(AlertType.equals("")){
                     Toast.makeText(Alert.this,"First Select Type of Alert", Toast.LENGTH_SHORT).show();
+                    SendAlert.setEnabled(true);
                 }
                 else if(myNumber.equals("")){
                     Toast.makeText(Alert.this,"Make  Sure You have registered Your Number",Toast.LENGTH_LONG).show();
+                    SendAlert.setEnabled(true);
                 }
                 else if (!isNetworkAvailable(Alert.this)){
                     Toast.makeText(Alert.this,"Make Sure Internet Is working!!!", Toast.LENGTH_SHORT).show();
+                    SendAlert.setEnabled(true);
                 }
+
             }
         });
 
@@ -142,30 +159,34 @@ public class Alert extends AppCompatActivity {
                 public void onResponse(String response) {
                     responseOfSendRequest=response;
                     try {
+                        SendAlert.setEnabled(true);
                         JSONObject jsonObject=new JSONObject(responseOfSendRequest);
                         if(jsonObject.getInt("success")==1){
-
+                            hideSoftKeyboard();
                             Toast.makeText(getApplicationContext(),"request Sent Successfully!!",Toast.LENGTH_LONG).show();
                             editor.putString("Alert",AlertType).commit();
-                        startActivity(new Intent(Alert.this,chatActivity.class));
+                        startActivity(new Intent(Alert.this,ChatActivity.class));
                         finish();
                         }
                         else if (jsonObject.getInt("success")==0){
+                            SendAlert.setEnabled(true);
                             Toast.makeText(getApplicationContext(),"Because of some reason we aren't able to send Alert",Toast.LENGTH_LONG).show();
                         }
                         else if(jsonObject.getInt("success")==2){
-                            Toast.makeText(getApplicationContext(),"sorry!!! none of your friend using SSHS",Toast.LENGTH_LONG).show();
+                            SendAlert.setEnabled(true);
+                            Toast.makeText(getApplicationContext(),"sorry!!! May none of your friend using sshs",Toast.LENGTH_LONG).show();
                         }
                         else{
-
+                            SendAlert.setEnabled(true);
                         }
                     } catch (JSONException e) {
+                        SendAlert.setEnabled(true);
                         e.printStackTrace();
                     }
                     finally {
-                        Toast.makeText(Alert.this,"You may no have any SSHS user as Friend",Toast.LENGTH_LONG);
+                        SendAlert.setEnabled(true);
+                        Toast.makeText(Alert.this,"You may no have any sshs user as Friend",Toast.LENGTH_LONG);
                     }
-
                 }
             }, new com.android.volley.Response.ErrorListener() {
                 @Override
@@ -203,6 +224,25 @@ public class Alert extends AppCompatActivity {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
         }
+    }
+
+    /**
+     * Hides the soft keyboard
+     */
+    public void hideSoftKeyboard() {
+        if(getCurrentFocus()!=null) {
+            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+    }
+
+    /**
+     * Shows the soft keyboard
+     */
+    public void showSoftKeyboard(View view) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+        view.requestFocus();
+        inputMethodManager.showSoftInput(view, 0);
     }
 
     public boolean isNetworkAvailable(Context context){

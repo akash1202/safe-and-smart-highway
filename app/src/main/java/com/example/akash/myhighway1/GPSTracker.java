@@ -20,6 +20,8 @@ import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.shinelw.library.ColorArcProgressBar;
+
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -39,13 +41,13 @@ public class GPSTracker extends Service implements LocationListener,android.loca
      double longitude;
      double latitude;
      private int FIRSTTIME=0;
-     private long MIN_DISTANCE=5;  //for 1 meter
-     private long MIN_TIME=1000*5; //for 1 second
+     private long MIN_DISTANCE=5;  //for 5 meter
+     private long MIN_TIME=1000; //for 1 second
      LocationManager locationManager;
      SharedPreferences sharedPreferences;
      private String PREFRENCENAME="AKASHSASH";
      SharedPreferences.Editor editor;
-    public GPSTracker(Context context, Activity activity) {
+    public GPSTracker(Context context,Activity activity) {
             this.mcontext=context;
             this.activity=activity;
             sharedPreferences=context.getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
@@ -168,8 +170,19 @@ public class GPSTracker extends Service implements LocationListener,android.loca
              long duration = TimeUnit.MILLISECONDS.toSeconds(this.location.getTime() - this.lastlocation.getTime());
              String speed = String.format("%.2f", (distance * 3600) / (duration * 1000));
              //Toast.makeText(mcontext, "Changed....:" + speed + "km/h", Toast.LENGTH_LONG).show();
-             TextView speedView = (TextView) activity.findViewById(R.id.speedText);
-             speedView.setText("" + speed + " km/h");
+
+             ColorArcProgressBar speedometer = (ColorArcProgressBar) activity.findViewById(R.id.speedometer);
+             try {
+
+                 if(Float.isNaN(Float.parseFloat(speed))){
+                     speedometer.setCurrentValues(0.0f);
+                 }
+                 else {
+                     speedometer.setCurrentValues(Float.parseFloat(speed));
+                 }
+                 } catch (NumberFormatException e) {
+                 e.printStackTrace();
+             }
          }
 
      }

@@ -8,15 +8,20 @@ android {
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
-        versionName "1.0"
-        multiDexEnabled true
+        versionName "1.0002"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [onesignal_app_id               : "fbe2bb5c-9d35-4526-a46f-18a995f9d5c1",
-                                // Project number pulled from dashboard, local value is ignored.
-                                onesignal_google_project_number: "638126602376"]
+        // manifestPlaceholders = [onesignal_app_id : "fbe2bb5c-9d35-4526-a46f-18a995f9d5c1",
+        // Project number pulled from dashboard, local value is ignored.
+        // onesignal_google_project_number: "638126602376"]
+        multiDexEnabled true
     }
+    /*compileOptions{
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }*/
     buildTypes {
         release {
+            shrinkResources true
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -24,50 +29,58 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     //noinspection GradleCompatible
-    compile 'com.android.support:appcompat-v7:26.+'
-    compile 'com.android.support:support-v4:26.+'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:design:26.+'
-    compile 'com.android.support:recyclerview-v7:26.+' //for recycler view
-    compile 'com.facebook.android:facebook-android-sdk:[4,5)'
-    compile 'com.google.android.gms:play-services:11.8.0'
-    //compile 'com.google.android.gms:play-services-places:11.6.2'
-    // compile 'com.google.android.gms:play-services-maps:11.6.2'
-    // compile 'com.google.android.gms:play-services-nearby:11.6.2'*/
-    compile 'com.google.firebase:firebase-auth:11.8.0' //for google authentication online
-    // compile 'com.google.android.gms:play-services-auth:11.6.2' //for google authentication offline
-    compile 'com.google.firebase:firebase-core:11.8.0' //for notification
-    compile 'com.google.firebase:firebase-messaging:11.8.0' //for notification
-    compile 'de.hdodenhof:circleimageview:2.2.0'     // for circle image
-    compile 'com.squareup.picasso:picasso:2.5.2' // for image load
-    compile 'com.android.volley:volley:1.1.0' //for request and response
-    compile 'com.google.firebase:firebase-database:11.8.0' // for messaging using realtime db
-    compile 'com.firebaseui:firebase-ui-database:0.4.4' //
-    compile 'com.1gravity:android-contactpicker:1.3.2'  //for pickup multiple contact
-    compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1' //for dynamic username based avtar
-    compile 'com.wang.avi:library:2.1.3'    //for loading animation
-    compile 'com.squareup.retrofit2:retrofit:2.3.0'     //for map nearby places latest 2.3.0
-    // compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
-    compile 'com.squareup.retrofit2:converter-gson:2.3.0' //latest 2.3.0
-    //compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
-    //compile 'com.squareup.okhttp3:okhttp:3.9.1'
-    compile 'com.squareup.okhttp:okhttp:2.4.0'
-    compile 'com.google.code.gson:gson:2.8.2'
-    //compile 'com.onesignal:OneSignal:[3.7.1, 3.99.99]' //for notification
-    compile 'com.koushikdutta.ion:ion:2.+'      //for load bitmap in marker
-    compile 'com.makeramen:roundedimageview:2.3.0'
-    compile 'com.github.bumptech.glide:glide:4.6.1'
-    //compile 'com.github.traex.rippleeffect:library:1.3'     //ripple effect
-    compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
-    compile 'com.theartofdev.edmodo:android-image-cropper:2.6.+'
+    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support:support-v4:26.+'
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support:design:26.+'
+    implementation 'com.android.support:recyclerview-v7:26.+' //for recycler view
+    //implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    implementation 'com.facebook.android:facebook-android-sdk:4.31.0'
+    implementation 'com.google.android.gms:play-services:12.0.1'
+    //implementation 'com.google.android.gms:play-services-places:11.6.2'
+    // implementation 'com.google.android.gms:play-services-maps:11.6.2'
+    // implementation 'com.google.android.gms:play-services-nearby:11.6.2'*/
+    implementation 'com.google.firebase:firebase-auth:12.0.1' //for google authentication online
+    // implementation 'com.google.android.gms:play-services-auth:11.6.2' //for google authentication offline
+    implementation 'com.google.firebase:firebase-core:12.0.1' //for notification
+    implementation 'com.google.firebase:firebase-messaging:12.0.1' //for notification
+    implementation 'de.hdodenhof:circleimageview:2.2.0'     // for circle image
+    implementation 'com.squareup.picasso:picasso:2.5.2' // for image load
+    implementation 'com.android.volley:volley:1.1.0' //for request and response
+    implementation 'com.google.firebase:firebase-database:12.0.1' // for messaging using realtime db
+    implementation 'com.firebaseui:firebase-ui-database:0.4.4' //
+    //implementation 'com.firebaseui:firebase-ui-database:3.3.0'
+    implementation 'com.1gravity:android-contactpicker:1.3.2'  //for pickup multiple contact
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    //for dynamic username based avtar
+    implementation 'com.wang.avi:library:2.1.3'    //for loading animation
+    implementation 'com.squareup.retrofit2:retrofit:2.3.0'     //for map nearby places latest 2.3.0
+    // implementation 'com.squareup.retrofit:retrofit:2.0.0-beta2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0' //latest 2.3.0
+    //implementation 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    //implementation 'com.squareup.okhttp3:okhttp:3.9.1'
+    implementation 'com.squareup.okhttp:okhttp:2.4.0'
+    implementation 'com.google.code.gson:gson:2.8.2'
+    //implementation 'com.onesignal:OneSignal:[3.7.1, 3.99.99]' //for notification
+    //implementation 'com.koushikdutta.ion:ion:2.+'      //for load bitmap in marker
+    //implementation 'com.makeramen:roundedimageview:2.3.0'
+    implementation 'com.github.bumptech.glide:glide:4.6.1'
+    //implementation 'com.github.traex.rippleeffect:library:1.3'     //ripple effect
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.6.+' //crop image
+    implementation 'com.github.shinelw:library:1.0.1'  //for show speed arc
+    //implementation 'fr.tvbarthel.blurdialogfragment:lib:2.2.0' //for blur dialog
+    implementation 'com.getbase:floatingactionbutton:1.10.1' //for floating Button
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.11.0' //for introduction
+    //implementation 'com.android.support:multidex:1.0.3'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 
-//    compile 'com.google.android.gms:play-services-location:11.8.0'
+//    implementation 'com.google.android.gms:play-services-location:11.8.0'
     testCompile 'junit:junit:4.12'
 }
 apply plugin: 'com.google.gms.google-services'

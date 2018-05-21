@@ -7,15 +7,16 @@
     android:layout_height="match_parent"
     android:id="@+id/chatrelative"
     android:background="@drawable/chat_bg"
-    tools:context="com.example.akash.myhighway1.chatActivity">
+    tools:context="com.example.akash.myhighway1.ChatActivity">
   <android.support.design.widget.CoordinatorLayout
+      android:id="@+id/coordinatorlayout1"
       android:layout_above="@id/chatpanel"
       android:layout_width="match_parent"
-      android:layout_height="match_parent">
+      android:layout_height="match_parent" >
       <android.support.v7.widget.RecyclerView
           android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center_horizontal"
+          android:layout_height="match_parent"
+          android:layout_gravity="bottom"
           app:layout_behavior="@string/appbar_scrolling_view_behavior"
           android:id="@+id/recyclerviewofmessage">
       </android.support.v7.widget.RecyclerView>
@@ -29,8 +30,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorWhatsapp"
             app:layout_scrollFlags="scroll|enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            />
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+            <include layout="@layout/custom_forum_actionbar"/>
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
   </android.support.design.widget.CoordinatorLayout>

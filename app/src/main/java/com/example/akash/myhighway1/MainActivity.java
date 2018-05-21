@@ -20,6 +20,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     private static final int CUSTOM_LOGIN=13;
     Button registerButton,logincustomButton;
     TextInputEditText e1, e2;
+    TextView forgetPasswordLink;
     CircleImageView prPhoto;
     SignInButton gmailButton;
     CallbackManager callbackManager;
@@ -99,6 +101,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         task.execute();
         registerButton=(Button)findViewById(R.id.registerButton);
         logincustomButton=(Button) findViewById(R.id.loginButton);
+        forgetPasswordLink=(TextView) findViewById(R.id.forgetpasswordLink);
        /* Window window=this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
@@ -153,6 +156,14 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     snackbar.setDuration(Snackbar.LENGTH_INDEFINITE).show();
                 }
             }});
+        forgetPasswordLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(MainActivity.this,ForgetPassword.class));
+                finish();
+            }
+        });
+
         gmailButton= (SignInButton) findViewById(R.id.gmailButton);
         fbauth= FirebaseAuth.getInstance();
         // Configure Google Sign In
@@ -433,28 +444,28 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if(requestCode==1){
             if(grantResults[0]== PackageManager.PERMISSION_DENIED){
-                Toast.makeText(this,"Provide Gps access for Better result!",Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this,"Provide Gps access for Better result!",Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
             if(grantResults[1]== PackageManager.PERMISSION_DENIED){
-                Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this,"Provide Contact access for Better result!",Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
             if(grantResults[2]== PackageManager.PERMISSION_DENIED){
-                Toast.makeText(this,"Provide send SMS for Better result!",Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this,"Provide send SMS for Better result!",Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
             if (grantResults[3] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "Provide Permission for Read External Storage!", Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this, "Provide Permission for Read External Storage!", Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
             if (grantResults[4] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "Provide Permission for Write External Storage!", Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this, "Provide Permission for Write External Storage!", Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
             if (grantResults[5] == PackageManager.PERMISSION_DENIED) {
-                Toast.makeText(this, "Provide Permission for read Network status!", Toast.LENGTH_SHORT).show();
-                (new MainActivity.MyAsyncTask()).execute();
+                //Toast.makeText(this, "Provide Permission for read Network status!", Toast.LENGTH_SHORT).show();
+                //(new MainActivity.MyAsyncTask()).execute();
             }
         }
         //super.onRequestPermissionsResult(requestCode, permissions, grantResults);

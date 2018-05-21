@@ -22,3 +22,9 @@
         android:title="Logout"/>
 
 </menu>
+
+    <!--<item android:id="@+id/idsetting_option"
+            android:icon="@drawable/ic_settings_black_24dp"
+            android:iconTint="@color/colorWhatsapp"
+            app:showAsAction="never"
+            android:title="Setting"/>-->

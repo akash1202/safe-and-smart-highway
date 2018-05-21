@@ -4,14 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="5dp"
-    >
+    android:padding="5dp">
 <TextView
     android:id="@+id/placeTypeSingleItem"
     android:text=""
     android:textSize="18sp"
     android:textColor="@color/colorWhatsapp"
     android:layout_height="wrap_content"
-    android:layout_width="match_parent"
-    />
+    android:layout_width="match_parent" />
 </LinearLayout>

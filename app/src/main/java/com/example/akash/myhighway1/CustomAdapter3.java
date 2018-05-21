@@ -2,6 +2,7 @@ package com.example.akash.myhighway1;
 
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Filter;
 import android.widget.Filterable;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,17 +48,22 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
         TextView pnameTextView;
         TextView pstatusTextView;
         ImageButton optionView;
+        ImageButton expandButtonView;
         TextView plocation,pspeed,ptime;
+        LinearLayout plocationlayout,pspeedlayout;
 
        public MyViewHolder(View view){
           super(view);
           profilecircleImageView=(CircleImageView) view.findViewById(R.id.pimage);
           pnameTextView=view.findViewById(R.id.pname);
           optionView=view.findViewById(R.id.poptions);
+          expandButtonView=view.findViewById(R.id.pexpand);
           pstatusTextView=view.findViewById(R.id.pstatus);
           plocation=view.findViewById(R.id.plocationtext);
           pspeed=view.findViewById(R.id.pspeedtext);
           ptime=view.findViewById(R.id.ptimetext);
+          plocationlayout=view.findViewById(R.id.plocationlayout);
+          pspeedlayout=view.findViewById(R.id.pspeedlayout);
 
        }
     }
@@ -74,7 +81,7 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder,int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
        try {
            String tempname = "";
            String tempstatus = "";
@@ -98,13 +105,38 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
            holder.plocation.setText(templocation);
            holder.pspeed.setText(tempspeed+"km/h");
            holder.ptime.setText(temptime);
+           holder.plocationlayout.setVisibility(View.GONE);
+           holder.pspeedlayout.setVisibility(View.GONE);
+           holder.optionView.setVisibility(View.GONE);
 
+
+           holder.plocationlayout.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   Uri googleMapParams=Uri.parse("google.navigation:q="+holder.plocation.getText().toString());
+                   Intent MapIntent=new Intent(Intent.ACTION_VIEW,googleMapParams);
+                   MapIntent.setPackage("com.google.android.apps.maps");
+                   if(MapIntent.resolveActivity(context.getPackageManager())!=null) {
+                       context.startActivity(MapIntent);
+                   }
+               }
+           });
+
+           holder.expandButtonView.setOnClickListener(new View.OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   holder.plocationlayout.setVisibility(View.VISIBLE);
+                   holder.pspeedlayout.setVisibility(View.VISIBLE);
+                   holder.expandButtonView.setVisibility(View.GONE);
+                   holder.optionView.setVisibility(View.VISIBLE);
+               }
+           });
            holder.optionView.setOnClickListener(new View.OnClickListener() {
                @Override
                public void onClick(View view) {
 
                   Toast.makeText(context,"hello",Toast.LENGTH_SHORT).show();
-                   /*popupMenu = new PopupMenu(context, view);
+                   popupMenu = new PopupMenu(context, view);
                    popupMenu.getMenu().add("View");
                    popupMenu.getMenu().add("Message");
                    popupMenu.getMenu().add("Remove");
@@ -113,18 +145,18 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
                        @Override
                        public boolean onMenuItemClick(MenuItem item) {
 
-                           *//*if (item.getTitle().equals("View")) {
+                           if (item.getTitle().equals("View")) {
                                Toast.makeText(context, "View clicked...", Toast.LENGTH_SHORT).show();
                            }
                            if (item.getTitle().equals("Message")) {
                                Toast.makeText(context, "Message clicked...", Toast.LENGTH_SHORT).show();
                            }
-                           if (item.getTitle().equals("Remove")) {
-                               //removeItem(TempPosition, TempProblem);
-                           }*//*
+                           if (item.getTitle().equals("Solved?")) {
+                               removeItem(TempPosition, TempProblem);
+                           }
                            return false;
                        }
-                   });*/
+                   });
 
                }
            });

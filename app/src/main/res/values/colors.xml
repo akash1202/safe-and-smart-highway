@@ -13,4 +13,6 @@
 <color name="statusbarmatchingcolor1">#f7010412</color>
 <color name="transparentcolor">#ffffffff</color>
 <color name="whitecolor">#ffffff</color>
+<color name="halfblack">#808080</color>
+<color name="black_semi_transparent">#805677fc</color>
 </resources>

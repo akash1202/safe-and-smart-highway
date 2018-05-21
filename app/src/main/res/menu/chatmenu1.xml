@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/idcm1chatlocation"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_mylocation"
+        android:iconTint="@color/whitecolor"
+        android:title="Location"/>
+    <item
+        android:id="@+id/idcm1chatcall"
+        app:showAsAction="always"
+        android:icon="@android:drawable/ic_menu_call"
+        android:iconTint="@color/whitecolor"
+        android:title="Call"/>
+    <item android:id="@+id/idcm1chatinfo"
+        app:showAsAction="ifRoom"
+        android:icon="@android:drawable/ic_menu_info_details"
+        android:iconTint="@color/colorWhatsapp"
+        android:title="Info"/>
+    <item
+        android:id="@+id/idcm1chatsolved"
+        app:showAsAction="never"
+        android:title="Status:Not solved"/>
+</menu>

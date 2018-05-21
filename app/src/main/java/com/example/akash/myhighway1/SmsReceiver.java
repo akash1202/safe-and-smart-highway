@@ -67,7 +67,7 @@ public class SmsReceiver extends BroadcastReceiver {
                     }
                 }
 
-                if(body.contains("SSHS")) {
+                if(body.contains("SSHS:")) {
                     String values[]=body.split(",");
                     String values1[]=values[0].split(":");
 
@@ -82,7 +82,8 @@ public class SmsReceiver extends BroadcastReceiver {
                     altitude=values[3].trim();
                     speed=values[4].trim();
                     problemCode=values[5].trim();
-
+                    if(problemCode.equals("7"))
+                        problemCode="3";
                     content+="\rFrom:"+sender+"\nMessage:";
                     content+=body+"\r";
                     Toast.makeText(context,"0:"+deviceId+" 1:"+latitude+" 2:"+longitude+" 3:"+altitude+" 4:"+speed+" 5:"+problemCode,Toast.LENGTH_LONG).show();
@@ -102,7 +103,7 @@ public class SmsReceiver extends BroadcastReceiver {
 
     public boolean sendRequest(final String urlforrequest, final String requestfrom, final String requestTo, final String deviceId, final String latitude, final String longitude, final String altitude, final String speed, final String problemCode){
 
-        final  Context context1;
+        final Context context1;
         requestQueue= Volley.newRequestQueue(context);
         stringRequest =new StringRequest(Request.Method.POST, urlforrequest, new Response.Listener<String>() {
             @Override
