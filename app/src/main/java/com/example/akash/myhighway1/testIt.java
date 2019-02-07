@@ -3,6 +3,7 @@ package com.example.akash.myhighway1;
 
 import android.*;
 import android.Manifest;
+import android.app.Dialog;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
@@ -263,7 +264,7 @@ private static final String TAG="testItActivity";
             @Override
             public void onClick(View view) {
                 fabmenu.collapseImmediately();
-                if(myTracker.cangetLocation()){
+                if(myTracker.cangetLocation()){         // #TODO adding permission request before location request for it to solve it eror
                     myTracker.getLocation();
                     appBarLayout.setAnimation(new Animation() {
                         @Override
@@ -277,8 +278,10 @@ private static final String TAG="testItActivity";
                     l1=new Location("A");
                     l1.setLatitude(myTracker.getLatitude());
                     l1.setLongitude(myTracker.getLongitude());
+
+
                     updateMeOnserver();
-                    snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude(),Snackbar.LENGTH_LONG);
+                    snackbar=Snackbar.make(view,"lat:"+myTracker.getLatitude()+" long:"+myTracker.getLongitude()+" Altitude:"+myTracker.getAltitude()+" speed:"+myTracker.getSpeed(),Snackbar.LENGTH_LONG);
                     snackbar.setActionTextColor(getResources().getColor(R.color.whitecolor));
                     snackbar.setAction("dismiss", new View.OnClickListener() {
                         @Override
@@ -522,6 +525,8 @@ private static final String TAG="testItActivity";
                     }
                 }
             });
+
+
         //getActionBar().setCustomView(t);//setActionBar(t);
     // AIzaSyB2_305KWe0wmWX1TWX_AJDBBDh-d2pe_4 map-api key
         /*FReference=FirebaseDatabase.getInstance().getReference().child("Users").child(OnlinUserId);
@@ -553,13 +558,13 @@ private static final String TAG="testItActivity";
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-       /*if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
+       if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.M && !Settings.canDrawOverlays(this)) {
            Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
            startActivityForResult(intent,ALLOW_FLOAT_WIDGET);
        }
        else{
            initializeWidget();
-       }*/
+       }
     }
     public void initializeWidget(){
         startService(new Intent(getApplicationContext(),FloatingView.class));
@@ -588,7 +593,7 @@ private static final String TAG="testItActivity";
             if (!Token.equals(Token1)&&Token!="") {
                 editor.putString("token", Token).commit();
             } else {
-                String urlToRequest = "https://myhighway.000webhostapp.com/api/updatetoken.php";
+                String urlToRequest = getString(R.string.appwebsite)+"/api/updatetoken.php";
                 String userEmail = sharedPreferences.getString("userEmailkey", "");
                 String userPhone = sharedPreferences.getString("userMobNumberkey", "");
                 if (userPhone.length() > 10)
@@ -902,7 +907,7 @@ private static final String TAG="testItActivity";
 
         bitmap.compress(Bitmap.CompressFormat.JPEG, 5, baos);
         byte[] imageBytes = baos.toByteArray();
-        String uploadingUsingURL="https://myhighway.000webhostapp.com/api/upload.php";
+        String uploadingUsingURL=getString(R.string.appwebsite)+"/api/upload.php";
         final String path=uri.getPath();
         final String extension=path.substring(path.lastIndexOf("."));
         final String imageString = Base64.encodeToString(imageBytes, Base64.DEFAULT);
@@ -1307,6 +1312,29 @@ private static final String TAG="testItActivity";
     }
 
 
+    @Override
+    protected void onPause() {
+        myTracker.stopUsingGPS();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        try {           //to check gps is on and open gps setting
+            int off=Settings.Secure.getInt(getContentResolver(),Settings.Secure.LOCATION_MODE);
+            if(off==0) {
+                showGPSDisabledDialog();
+            }
+            else{
+                myTracker.getLocation();
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        super.onResume();
+    }
+
 
     @Override
     protected void onStop() {
@@ -1572,6 +1600,26 @@ private static final String TAG="testItActivity";
             return true;
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+
+    public void showGPSDisabledDialog(){
+        AlertDialog.Builder builder= new AlertDialog.Builder(this);
+        builder.setTitle("GPS Disabled");
+        builder.setMessage("GPS is Disabled, In order to use this app properly enable GPS");
+        builder.setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No, Just Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        Dialog dialog= builder.create();
+        dialog.show();
     }
 
 

@@ -4,9 +4,14 @@ import android.app.FragmentManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.net.Uri;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,6 +26,7 @@ import android.widget.Toast;
 
 import com.example.akash.myhighway1.Friends.MyContact;
 import com.squareup.picasso.Picasso;
+import com.xeoh.android.texthighlighter.TextHighlighter;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -40,6 +46,8 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
     public List<Problem> ProblemlistFiltered;
     Context context;
     PopupMenu popupMenu;
+    SearchView searchView;
+    String searchString;
     private String PREFRENCENAME="AKASHSASH";
     SharedPreferences sharedPreferences;
 
@@ -50,6 +58,7 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
         ImageButton optionView;
         ImageButton expandButtonView;
         TextView plocation,pspeed,ptime;
+
         LinearLayout plocationlayout,pspeedlayout;
 
        public MyViewHolder(View view){
@@ -67,10 +76,11 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
 
        }
     }
-    public CustomAdapter3(Context context, FragmentManager fragmentManager, List<Problem> ProblemList){
+    public CustomAdapter3(Context context, FragmentManager fragmentManager, List<Problem> ProblemList, SearchView searchView){
         this.ProblemList=ProblemList;
         this.ProblemlistFiltered=ProblemList;
         this.context=context;
+        this.searchView=searchView;
         sharedPreferences=context.getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
     }
     @Override
@@ -108,6 +118,31 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
            holder.plocationlayout.setVisibility(View.GONE);
            holder.pspeedlayout.setVisibility(View.GONE);
            holder.optionView.setVisibility(View.GONE);
+           holder.expandButtonView.setVisibility(View.VISIBLE);
+
+           /* int index= tempname.indexOf(searchString);
+           SpannableStringBuilder ssb=new SpannableStringBuilder(searchString);
+           ForegroundColorSpan fcs= new ForegroundColorSpan(Color.parseColor("#FFFFFF"));
+           ssb.setSpan(fcs,index,index+searchString.length(), Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+           holder.pnameTextView.setText(ssb);
+        */
+            /*searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                @Override
+                public boolean onQueryTextSubmit(String query) {
+                    return false;
+                }
+
+                @Override
+                public boolean onQueryTextChange(String newText) {
+                    new TextHighlighter()
+                            .addTarget(holder.pnameTextView)
+                            .setBackgroundColor(R.color.colorWhatsapp1)
+                            .setForegroundColor(R.color.whitecolor)
+                            .highlight(newText,TextHighlighter.BASE_MATCHER);
+                    return false;
+                }
+            });*/
+
 
 
            holder.plocationlayout.setOnClickListener(new View.OnClickListener() {
@@ -151,7 +186,7 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
                            if (item.getTitle().equals("Message")) {
                                Toast.makeText(context, "Message clicked...", Toast.LENGTH_SHORT).show();
                            }
-                           if (item.getTitle().equals("Solved?")) {
+                           if (item.getTitle().equals("Remove")) {
                                removeItem(TempPosition, TempProblem);
                            }
                            return false;
@@ -213,6 +248,7 @@ public class CustomAdapter3 extends RecyclerView.Adapter<CustomAdapter3.MyViewHo
             }
         };
     }
+
 
    public void removeItem(int position,Problem TempProblem){
         ProblemList.remove(position);

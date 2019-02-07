@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
                     loader.setIndicatorColor(R.color.colorWhatsapp);
                     loader.setClickable(false);
                     loader.show();*/
-                    urlforlogin = "https://myhighway.000webhostapp.com/api/login.php";
+                    urlforlogin = getString(R.string.appwebsite)+"/api/login.php";
                     doCustomLogin(urlforlogin, e1.getText().toString().trim().replace(" ", ""), e2.getText().toString());
                 }         //end of if
                 if (!isNetworkAvailable(MainActivity.this)) {
@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
 
     private void loginwithfacebook(final String userid, final String userName) {
             RequestQueue requestQueue=Volley.newRequestQueue(MainActivity.this);
-            String urlForRequest="https://myhighway.000webhostapp.com/api/facebooklogin.php";
+            String urlForRequest=getString(R.string.appwebsite)+"/api/facebooklogin.php";
             StringRequest stringRequest=new StringRequest(Request.Method.POST, urlForRequest, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -476,11 +476,11 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.O
         SharedPreferences.Editor editor=sharedPreferences.edit();
         switch (type) {
             case GOOGLE_LOGIN:
-                urlforlogin = "https://myhighway.000webhostapp.com/api/loginwithGooglefacebook.php";
+                urlforlogin = getString(R.string.appwebsite)+"/api/loginwithGooglefacebook.php";
                 doCustomLogin(urlforlogin, email, "");
                 return;
             case FACEBOOK_LOGIN:
-                urlforlogin = "https://myhighway.000webhostapp.com/api/loginwithGooglefacebook.php";
+                urlforlogin = getString(R.string.appwebsite)+"/api/loginwithGooglefacebook.php";
                 if (email == null) {
                     FirebaseAuth.getInstance().signOut();
                     LoginManager.getInstance().logOut();

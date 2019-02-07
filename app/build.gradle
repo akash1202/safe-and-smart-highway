@@ -77,6 +77,7 @@ dependencies {
     //implementation 'fr.tvbarthel.blurdialogfragment:lib:2.2.0' //for blur dialog
     implementation 'com.getbase:floatingactionbutton:1.10.1' //for floating Button
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.11.0' //for introduction
+    implementation 'com.xeoh.android:text-highlighter:1.0.2'
     //implementation 'com.android.support:multidex:1.0.3'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.6.1'
 

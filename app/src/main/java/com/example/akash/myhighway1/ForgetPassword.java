@@ -28,7 +28,7 @@ public class ForgetPassword extends AppCompatActivity {
     AutoCompleteTextView user;
     String responseOfSendRequest="";
     int IS_EMAIL=1,IS_PHONE=2,flag=2,count=0;
-    String urlforrequest="https://myhighway.000webhostapp.com/api/forgetpassword.php";
+    String urlforrequest=getString(R.string.appwebsite)+"/api/forgetpassword.php";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

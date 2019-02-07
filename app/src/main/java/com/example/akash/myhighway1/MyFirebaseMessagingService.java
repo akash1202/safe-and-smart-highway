@@ -6,6 +6,8 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.icu.util.ULocale;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
@@ -19,6 +21,10 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -38,6 +44,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
     String imageurl="";
     Intent intent;
     String body1="";
+    Bitmap bitmap;
     DatabaseReference databaseReference1;
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -97,8 +104,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP|Intent.FLAG_ACTIVITY_NEW_TASK);
             PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
+            bitmap = getBitmapFromURL(imageurl);
 
             NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this)
+                    //.setLargeIcon(bitmap)
+                    .setStyle(new NotificationCompat.BigPictureStyle().bigPicture(bitmap))
                     .setSmallIcon(R.drawable.sshs)
                     .setContentTitle(title)
                     .setContentText(body)
@@ -160,6 +170,24 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
             notificationManagerCompat.notify(0, notBuilder.build());*/
         }catch (Exception e){
             Log.d("notify error notin bg:",e.toString());
+        }
+    }
+
+
+
+
+    public Bitmap getBitmapFromURL(String strURL) {
+        try {
+            URL url = new URL(strURL);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 

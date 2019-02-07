@@ -35,7 +35,7 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:inputType="textEmailAddress"
+        android:inputType="textWebEmailAddress"
         android:textSize="25sp"
         android:hint="Email Address"
         android:maxLines="1"

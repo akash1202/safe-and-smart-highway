@@ -21,11 +21,12 @@ tools:context="com.example.akash.myhighway1.MyVehicle">
 </android.support.design.widget.AppBarLayout>
 
 <TextView
+    android:id="@+id/myvehicleuserid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center"
     android:textColor="@color/colorWhatsapp"
-    android:text="User Id : 140420107001" />
+    android:text="User Id : NA" />
 
 <android.support.v7.widget.CardView
     android:id="@+id/vehiclecard"

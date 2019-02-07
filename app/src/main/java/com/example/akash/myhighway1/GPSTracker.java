@@ -1,6 +1,7 @@
 package com.example.akash.myhighway1;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -37,7 +38,9 @@ public class GPSTracker extends Service implements LocationListener,android.loca
      public static boolean cangetLocation=false;
      Location location=null;
      Location lastlocation=null;
-     Activity activity;
+     AppCompatActivity activity;
+     double altitude;
+     float speed;
      double longitude;
      double latitude;
      private int FIRSTTIME=0;
@@ -47,7 +50,7 @@ public class GPSTracker extends Service implements LocationListener,android.loca
      SharedPreferences sharedPreferences;
      private String PREFRENCENAME="AKASHSASH";
      SharedPreferences.Editor editor;
-    public GPSTracker(Context context,Activity activity) {
+    public GPSTracker(Context context,AppCompatActivity activity) {
             this.mcontext=context;
             this.activity=activity;
             sharedPreferences=context.getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
@@ -74,6 +77,8 @@ public class GPSTracker extends Service implements LocationListener,android.loca
                                 if (location != null) {
                                     longitude = location.getLongitude();
                                     latitude = location.getLatitude();
+                                    altitude=location.getAltitude();
+                                    speed=location.getSpeed();
                                     Log.d("using ","Network:"+longitude+","+latitude);
                                 }
                             }
@@ -86,6 +91,8 @@ public class GPSTracker extends Service implements LocationListener,android.loca
                                 if (location != null) {
                                     longitude = location.getLongitude();
                                     latitude = location.getLatitude();
+                                    altitude=location.getAltitude();
+                                    speed=location.getSpeed();
                                     Log.d("using ","GPS:"+longitude+","+latitude);
                                 }
                             }
@@ -107,15 +114,25 @@ public class GPSTracker extends Service implements LocationListener,android.loca
         }
         return location;
     }
-        public double getLongitude(){
+     public double getLongitude(){
         if(location!=null)
         longitude=location.getLongitude();
         return longitude;
-        }
+     }
      public double getLatitude(){
          if(location!=null)
              latitude=location.getLatitude();
          return latitude;
+     }
+     public double getAltitude(){
+         if(location!=null)
+             altitude=location.getAltitude();
+         return altitude;
+     }
+     public float getSpeed(){
+         if(location!=null)
+             speed=location.getSpeed();
+         return speed;
      }
     public boolean cangetLocation(){
         return this.cangetLocation;
@@ -187,6 +204,27 @@ public class GPSTracker extends Service implements LocationListener,android.loca
 
      }
 
+
+
+     public void showGPSDisabledDialog(){
+        AlertDialog.Builder builder= new AlertDialog.Builder(mcontext);
+        builder.setTitle("GPS Disabled");
+        builder.setMessage("GPS is Disabled, In order to use this app properly enable GPS");
+        builder.setPositiveButton("Enable GPS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No, Just Exit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+         //Dialog dialog= builder.create();
+         //dialog.show();
+ }
+
      @Override
      public void onStatusChanged(String s, int i, Bundle bundle) {
 
@@ -199,12 +237,15 @@ public class GPSTracker extends Service implements LocationListener,android.loca
 
      @Override
      public void onProviderDisabled(String s) {
-
+        showGPSDisabledDialog();
      }
 
      @Override
      public void onGpsStatusChanged(int i) {
 
      }
+
+
+
 
  }

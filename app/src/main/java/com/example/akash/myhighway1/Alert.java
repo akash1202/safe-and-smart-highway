@@ -104,7 +104,7 @@ public class Alert extends AppCompatActivity {
                     AlertDesc+=","+lastLoc;
                     String s1=contactlist+AlertDesc;
                    // Toast.makeText(Alert.this, s1, Toast.LENGTH_SHORT).show();
-                    String s[]={"https://myhighway.000webhostapp.com/api/sendAlert.php","alert",s1};
+                    String s[]={getString(R.string.appwebsite)+"/api/sendAlert.php","alert",s1};
                     sendRequest sendrequest=new sendRequest();
                     sendrequest.execute(s);
                 }
@@ -178,14 +178,11 @@ public class Alert extends AppCompatActivity {
                         }
                         else{
                             SendAlert.setEnabled(true);
+                            Toast.makeText(Alert.this,"You may no have any sshs user as Friend",Toast.LENGTH_LONG);
                         }
                     } catch (JSONException e) {
                         SendAlert.setEnabled(true);
                         e.printStackTrace();
-                    }
-                    finally {
-                        SendAlert.setEnabled(true);
-                        Toast.makeText(Alert.this,"You may no have any sshs user as Friend",Toast.LENGTH_LONG);
                     }
                 }
             }, new com.android.volley.Response.ErrorListener() {

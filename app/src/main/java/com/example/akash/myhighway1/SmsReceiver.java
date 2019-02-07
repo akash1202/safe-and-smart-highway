@@ -40,12 +40,13 @@ public class SmsReceiver extends BroadcastReceiver {
     RequestQueue requestQueue;
     StringRequest stringRequest;
     Context context;
-    String urlforrequest1="http://sshs.co.in/new_request_register.php";
-    String urlforrequest2="https://myhighway.000webhostapp.com/api/registerproblem.php";
+    String urlforrequest2="http://sshs.co.in/new_request_register.php";
+    String urlforrequest1="";
     @Override
     public void onReceive(Context context, Intent intent) {
         Bundle bundle=intent.getExtras();
         this.context=context;
+        urlforrequest1=context.getString(R.string.appwebsite)+"/api/registerproblem.php";
         SmsMessage[] messages=null;
         String content="";
         if(bundle!=null){

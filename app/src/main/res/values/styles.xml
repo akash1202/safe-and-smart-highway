@@ -7,6 +7,14 @@
         <item name="colorPrimaryDark">@color/colorWhatsapp</item>
         <item name="colorAccent">@color/colorWhatsapp</item><!-- coloraccent -->
     </style>
+
+    <style name="OverlayAppThemeRed">
+        <item name="colorPrimary">@color/colorWhatsapp2</item>
+        <item name="colorPrimaryDark">@color/colorWhatsapp2</item>
+        <item name="colorAccent">@color/colorWhatsapp2</item>
+    </style>
+
+
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>
         <item name="android:windowActionBarOverlay">true</item>
@@ -27,6 +35,18 @@
         <item name="android:statusBarColor">@color/colorWhatsapp</item>
       <!--  <item name="android:windowTranslucentNavigation">false</item>-->
     </style>
+    <style name="OverlayAppThemeRed.NoActionBar" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <!-- for make transparent statusbar below two property-->
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/colorWhatsapp2</item>
+        <!--  <item name="android:windowTranslucentNavigation">false</item>-->
+    </style>
+
+
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
     <style name="menu_labels_style">

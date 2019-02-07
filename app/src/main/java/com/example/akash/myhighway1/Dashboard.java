@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.AuthFailureError;
@@ -31,6 +32,7 @@ public class Dashboard extends AppCompatActivity {
     TextView dashboardEmailText;
     TextView dashboardPhoneText;
     TextView dashboardNameText;
+    TextView dashboardNotify;
     private String PREFRENCENAME="AKASHSASH";
     SharedPreferences sharedPreferences;
     SharedPreferences.Editor editor;
@@ -39,6 +41,7 @@ public class Dashboard extends AppCompatActivity {
     String dashboardpimageURL="";
     String id1="",userimage="",username="",password="",dob="",usertype="",email="",primary_phone="",secondary_phone="",deviceid="";
     String register_timestamp="",current_token="",address_street="",address_district="",address_city="",address_state="",address_country="";
+    String dashboardNotification="";
     Integer totalfriends=0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,20 +56,23 @@ public class Dashboard extends AppCompatActivity {
         dashboardEmailText=(TextView)findViewById(R.id.dashboardEmailText);
         dashboardPhoneText=(TextView)findViewById(R.id.dashboardPhoneText);
         dashboardNameText=(TextView)findViewById(R.id.dashboardNameText);
+        dashboardNotify=(TextView)findViewById(R.id.dashboardNotify);
+
         sharedPreferences=getSharedPreferences(PREFRENCENAME, Context.MODE_PRIVATE);
         editor=sharedPreferences.edit();
         totalfriends=sharedPreferences.getInt("friends",0);
         dashboardpimageURL=sharedPreferences.getString("userPhotoURikey","");
-
         String userName=sharedPreferences.getString("userNamekey","NA");
         String userEmail=sharedPreferences.getString("userEmailkey","NA");
         String userPhone=sharedPreferences.getString("userMobNumberkey","NA");
+        dashboardNotification="this is to notify you that this is notification to you only! this is notification only";
         dashboardEmailText.setText(userEmail);
         dashboardPhoneText.setText(userPhone);
         dashboardNameText.setText(userName);
-
+       // dashboardNotify.setText(dashboardNotification);
+       // dashboardNotify.setSelected(true);
         if(userPhone.equals("NA")||userEmail.equals("NA")||responseOfSendRequest.equals("")){
-            String urlToRequest="https://myhighway.000webhostapp.com/api/getprofile.php";
+            String urlToRequest=getString(R.string.appwebsite)+"/api/getprofile.php";
             if (userPhone.length() > 10)
                 userPhone = userPhone.substring(3, userPhone.length() - 1);
             String user = (userPhone.equals("NA") ? userEmail : userPhone);
@@ -129,10 +135,20 @@ public class Dashboard extends AppCompatActivity {
                         address_city=jsonObject.getString("address_city");
                         address_state=jsonObject.getString("address_state");
                         address_country=jsonObject.getString("address_country");
+                        dashboardNotification=jsonObject.getString("notification");
                         dashboardNameText.setText(username);
                         dashboardEmailText.setText(email);
                         dashboardPhoneText.setText(primary_phone);
-
+//                        dashboardPhoneText.setCompoundDrawablesWithIntrinsicBounds(0,0,R.drawable.add_friend,0);
+//                        dashboardPhoneText.setCompoundDrawablePadding(getApplicationContext().getResources().getDimensionPixelOffset(R.dimen.margin_small));
+                        if(dashboardNotification.equalsIgnoreCase("no")) {
+                            dashboardNotify.setVisibility(View.GONE);
+                        }
+                        else{
+                            dashboardNotify.setVisibility(View.VISIBLE);
+                            dashboardNotify.setText(dashboardNotification);
+                            dashboardNotify.setSelected(true);
+                        }
                         User user=new User(Dashboard.this);
                         user.setUserId(id1);
                         user.setUserName(username);

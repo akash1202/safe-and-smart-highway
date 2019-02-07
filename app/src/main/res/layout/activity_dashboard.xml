@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<ScrollView
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<ScrollView
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
-<LinearLayout
+    android:layout_width="match_parent"    >
+   <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -20,8 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorWhatsapp"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
-            />
+            app:popupTheme="@style/AppTheme.PopupOverlay"   />
     </android.support.design.widget.AppBarLayout>
 <RelativeLayout
     android:layout_width="match_parent"
@@ -47,8 +49,7 @@
             android:text="Anaghan Akash"
             android:textSize="21dp"
             android:textColor="@color/colorWhatsapp1"
-            android:textStyle="bold"
-            />
+            android:textStyle="bold"            />
     </LinearLayout>
     <android.support.v7.widget.CardView
         android:layout_marginTop="200dp"
@@ -73,8 +74,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:text="Relatives"
-                />
+                android:text="Relatives"         />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -82,8 +82,7 @@
                 android:textColor="@color/colorWhatsapp"
                 android:textStyle="bold"
                 android:text="125K"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp"     />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -96,8 +95,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:text="Guardians"
-                />
+                android:text="Guardians"    />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -119,8 +117,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:text="Friends"
-                />
+                android:text="Friends" />
             <TextView
                 android:id="@+id/dasboardfriendsText"
                 android:gravity="center"
@@ -129,8 +126,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/colorWhatsapp"
                 android:text="10.8K"
-                android:textSize="20sp"
-                />
+                android:textSize="20sp"   />
         </LinearLayout>
 </LinearLayout>
     </android.support.v7.widget.CardView>
@@ -175,8 +171,7 @@
             <ImageView
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:src="@drawable/ic_email_black_24dp"
-                />
+                android:src="@drawable/ic_email_black_24dp"    />
             <TextView
                 android:id="@+id/dashboardEmailText"
                 android:layout_width="match_parent"
@@ -187,9 +182,27 @@
                 android:padding="5dp"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:text="anaghanakash007@gmail.com"
-                />
+                android:text="anaghanakash007@gmail.com" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
     </ScrollView>
+    <TextView
+    android:layout_alignParentBottom="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="5dp"
+    android:id="@+id/dashboardNotify"
+    android:textSize="15sp"
+    android:text=""
+    android:visibility="gone"
+    android:paddingVertical="2dp"
+    android:gravity="center"
+    android:ellipsize="marquee"
+    android:marqueeRepeatLimit="marquee_forever"
+    android:scrollHorizontally="true"
+    android:singleLine="true"
+    android:background="@color/colorWhatsapp"
+    android:textColor="@color/whitecolor"
+    android:textAppearance="?android:attr/textAppearanceSmall" />
+</RelativeLayout>

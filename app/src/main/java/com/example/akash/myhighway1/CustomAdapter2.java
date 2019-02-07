@@ -161,7 +161,7 @@ public class CustomAdapter2 extends RecyclerView.Adapter<CustomAdapter2.MyViewHo
                     //send request start
                     sendRequest sendrequest = new sendRequest(context, googleMap);
                     Log.d("address In Popup","In network available:"+temp);
-                    String s1[] = {"https://myhighway.000webhostapp.com/api/getprofile.php", "user", temp, "POPUP"};
+                    String s1[] = {context.getString(R.string.appwebsite)+"/api/getprofile.php", "user", temp, "POPUP"};
                     sendrequest.execute(s1);
                     // send request end
                 }

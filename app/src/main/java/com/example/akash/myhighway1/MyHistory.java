@@ -41,7 +41,7 @@ public class MyHistory extends AppCompatActivity {
     LinearLayoutManager linearLayoutManager;
     CustomAdapter3 customAdapter;
     String responseOfSendRequest="";
-    String urlforrequest="http://sshs.co.in/service/get_user_data.php";
+    String urlforrequest =""; //"http://sshs.co.in/service/get_user_data.php"
     int method= Request.Method.POST;
     SearchView searchView;
     @Override
@@ -60,6 +60,7 @@ public class MyHistory extends AppCompatActivity {
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         customAdapter=null;
+        urlforrequest = getString(R.string.appwebsite)+"/api/getHistory.php";
         User user=new User(MyHistory.this);
         String temp=user.getUserMobNumber().trim();
         int length=temp.length();
@@ -165,12 +166,12 @@ public class MyHistory extends AppCompatActivity {
                                 tempProblem.setProblemcode(Integer.parseInt(obj2.getString("emergency_code")));
                                 tempProblem.setProblem_loc1(obj2.getString("location"));
                                 tempProblem.setSpeed(obj2.getString("speed"));
-                                tempProblem.setDevice_number(obj2.getString("device_mobile_number"));
+                                tempProblem.setDevice_number(obj2.getString("request_from"));
                                 tempProblem.setTime1(obj2.getString("time"));
                                 tempProblem.setStatus(obj2.getString("status"));
                                 problems.add(tempProblem);
                             }
-                            customAdapter = new CustomAdapter3(MyHistory.this,getFragmentManager(),problems);
+                            customAdapter = new CustomAdapter3(MyHistory.this,getFragmentManager(),problems,searchView);
                             recyclerView.setAdapter(customAdapter);
                         } catch (Exception e) {
                             Toast.makeText(context, "Exception:" + e.getMessage().toString(), Toast.LENGTH_SHORT).show();

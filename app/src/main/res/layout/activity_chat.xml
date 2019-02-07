@@ -12,7 +12,9 @@
       android:id="@+id/coordinatorlayout1"
       android:layout_above="@id/chatpanel"
       android:layout_width="match_parent"
-      android:layout_height="match_parent" >
+      android:layout_height="match_parent"
+      android:paddingBottom="45dp"
+      >
       <android.support.v7.widget.RecyclerView
           android:layout_width="match_parent"
           android:layout_height="match_parent"

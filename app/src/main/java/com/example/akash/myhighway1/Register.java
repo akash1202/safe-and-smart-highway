@@ -124,6 +124,8 @@ public class Register extends AppCompatActivity {
 
     public void requestregister(){
         int count=0;
+
+
         if(name.getText().toString().equals("")){ name.setError("username can't be Empty");count++;}
         if(email.getText().toString().equals("")){ email.setError("Email Address can't be Empty");count++;}
         if(mobile.getText().toString().equals("")){ mobile.setError("Mobile Number can't be Empty");count++;}
@@ -138,7 +140,7 @@ public class Register extends AppCompatActivity {
         process.setMessage("Wait...");
         process.setCancelable(false);
         process.show();
-        String urlforlogin="https://myhighway.000webhostapp.com/api/register.php";
+        String urlforlogin=getString(R.string.appwebsite)+"/api/register.php";
         RequestQueue rq= Volley.newRequestQueue(getApplicationContext());
         StringRequest sr=new StringRequest(Request.Method.POST, urlforlogin, new Response.Listener<String>() {
             @Override

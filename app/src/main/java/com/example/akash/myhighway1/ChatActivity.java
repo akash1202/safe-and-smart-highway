@@ -6,8 +6,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -46,6 +47,7 @@ public class ChatActivity extends AppCompatActivity {
     private EditText eMessage;
     private RecyclerView MessageList;
     private ImageButton sendMessage;
+    AlertDialog dialog;
     CircleImageView chatProfileImage;
     TextView title,subtitle;
     private String PREFRENCENAME = "AKASHSASH";
@@ -160,7 +162,6 @@ public class ChatActivity extends AppCompatActivity {
                 //getSupportActionBar().setTitle("Solved");
                 SOLVED=1;
                 showExitAlert("Alert","Problem Solved Do You Want to Exit?");
-                //finish();
             }
             databaseReference = FirebaseDatabase.getInstance().getReference().child(phone).child("message"); //for get message
         }
@@ -386,7 +387,7 @@ public class ChatActivity extends AppCompatActivity {
     public void showExitAlert(String type, String Message) {    //for show exit application alertdialog
 
         Log.d("status:","exitalert");
-        android.support.v7.app.AlertDialog dialog = new android.support.v7.app.AlertDialog.Builder(ChatActivity.this)
+        dialog = new AlertDialog.Builder(this)
                 .setTitle(type)
                 .setCancelable(false)
                 .setMessage(Message)
@@ -410,4 +411,16 @@ public class ChatActivity extends AppCompatActivity {
                     }
                 }).show();
     }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(dialog!=null){
+            dialog.dismiss();
+        }
+    }
 }
+
+
+
