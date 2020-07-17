@@ -123,7 +123,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         Toolbar toolbar=(Toolbar) findViewById(R.id.toolbar1);
         //getActionBar().setCustomView(t);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Friends");
+        getSupportActionBar().setTitle("FriendsActivity");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setupActionBar();
     }

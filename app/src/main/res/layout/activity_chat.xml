@@ -7,17 +7,18 @@
     android:layout_height="match_parent"
     android:id="@+id/chatrelative"
     android:background="@drawable/chat_bg"
-    tools:context="com.example.akash.myhighway1.ChatActivity">
-  <android.support.design.widget.CoordinatorLayout
-      android:id="@+id/coordinatorlayout1"
-      android:layout_above="@id/chatpanel"
-      android:layout_width="match_parent"
-      android:layout_height="match_parent"
-      android:paddingBottom="45dp"
-      >
-      <android.support.v7.widget.RecyclerView
-          android:layout_width="match_parent"
-          android:layout_height="match_parent"
+    tools:context="com.example.akash.myhighway1.user.ChatActivity">
+
+    <android.support.design.widget.CoordinatorLayout
+        android:id="@+id/coordinatorlayout1"
+        android:layout_above="@id/chatpanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="45dp">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
           android:layout_gravity="bottom"
           app:layout_behavior="@string/appbar_scrolling_view_behavior"
           android:id="@+id/recyclerviewofmessage">

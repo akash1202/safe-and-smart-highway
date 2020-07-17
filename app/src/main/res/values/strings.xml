@@ -91,8 +91,10 @@
     </string-array>
 
     <string-array name="multi_select_list_preference_default_value" />
-    <string name="appwebsite">https://myhighway.000webhostapp.com</string>
-
+    <!--<string name="appwebsite">https://myhighway.000webhostapp.com</string> -->
+    <string name="appwebsite">http://192.168.2.29</string>
+    <string name="privacypolicylink">http://192.168.2.29/sitepolicy/</string>
+    <string name="privacytextstring"><u>Privacy Policy</u></string>
     <string name="pref_title_system_sync_settings">System sync settings</string>
 
     <!-- Example settings for Notifications -->
@@ -104,4 +106,66 @@
     <string name="pref_ringtone_silent">Silent</string>
 
     <string name="pref_title_vibrate">Vibrate</string>
+
+    <string name="title_app_update_alert">Application update</string>
+    <string name="msg_app_update_alert">Application update is required for app to work properly, please update application.</string>
+    <string name="action_update">Update</string>
+
+    <string name="title_permission_denied">Permission denied</string>
+    <string name="btn_i_am_sure">I\'m sure</string>
+    <string name="btn_retry">Re-Try</string>
+    <string name="msg_sms_permission_denied">Without this permission the app is unable to detect verification code received in your SMS. Are you sure you want to deny this permission?</string>
+    <string name="msg_otp_detection_disabled">SMS permission is not allowed. So auto detection of OTP is disabled.</string>
+    <string name="msg_camera_picture_permission_denied">Without the camera and storage permissions the app is unable to open camera, take a picture and store to the device. Are you sure you want to deny these permissions?</string>
+    <string name="msg_camera_picture_permission">To capture a picture and store to the device the application requires access to the camera and storage. Can you allow camera and storage permissions?</string>
+    <string name="msg_camera_video_permission_denied">Without the camera and storage permissions the app is unable to open camera and take a video. Are you sure you want to deny these permissions?</string>
+    <string name="msg_camera_video_permission">To take a video the application requires access to the camera and storage. Can you allow camera and storage permissions?</string>
+    <string name="msg_location_permission_denied">Without the location permission the app is unable to open map and pick location. Are you sure you want to deny this permission?</string>
+    <string name="msg_location_permission">To pick location the application requires location permission. Can you allow the permission?</string>
+    <string name="msg_storage_permission_denied">Without the storage permission the app is unable to run perfectly. Are you sure you want to deny this permission?</string>
+    <string name="msg_storage_permission">The application requires storage permission to run perfectly. Can you allow storage permission?</string>
+    <string name="msg_gallery_permission_denied">Without the storage permission the app is unable to pick image from gallery. Are you sure you want to deny this permission?</string>
+    <string name="msg_gallery_permission">To pick image from gallery the application requires storage permission. Can you allow storage permission?</string>
+    <string name="msg_contacts_permission_denied">Without the contacts permission the app is unable to get contacts information. Are you sure you want to deny this permission?</string>
+    <string name="msg_contacts_permission">The application requires contacts permission to get contacts information. Can you allow contacts permission?</string>
+    <string name="msg_microphone_permission_denied">Without the microphone permission the app is unable to record audio. Are you sure you want to deny this permission?</string>
+    <string name="msg_microphone_permission">The application requires microphone permission to record audio. Can you allow microphone permission?</string>
+    <string name="msg_basic_permissions_denied">Without the storage and contacts permissions the app is unable to run perfectly. Are you sure you want to deny these permissions?</string>
+    <string name="msg_basic_permissions">The application requires storage and contacts permissions to run perfectly. Can you allow storage and contacts permissions?</string>
+    <string name="msg_qr_scan_permission_denied">Without this permission the app is unable to open camera and scan QR code. Are you sure you want to deny this permission?</string>
+    <string name="msg_qr_scan_permission">To scan the QR code the application required access to the camera. Can you allow camera permission?</string>
+    <string name="msg_calender_permission">To add event in calender the application require calender permission.Can you allow the permission? </string>
+    <string name="msg_calender_permission_denied">Without this permission the app is unable to open calender. Are you sure you want to deny this permission?</string>
+    <string name="msg_phone_read_state_permission">The application require Phone permission.Can you allow the permission? </string>
+    <string name="msg_phone_read_state_permission_denied">Without this permission the app is unable to open Phone Call. Are you sure you want to deny this permission?</string>
+    <string name="msg_gallery_video_permission_denied">Without the storage permission the app is unable to pick image from gallery. Are you sure you want to deny this permission?</string>
+    <string name="msg_gallery_audio_permission_denied">Without the storage permission the app is unable to pick audio from gallery. Are you sure you want to deny this permission?</string>
+    <string name="msg_gallery_video_permission">To pick image from gallery the application requires storage permission. Can you allow storage permission?</string>
+    <string name="msg_gallery_audio_permission">To pick audio from gallery the application requires storage permission. Can you allow storage permission?</string>
+    <string name="msg_system_alert_window_permission">The application requires system alert window permission for display caller info. Can you allow system alert window permission?</string>
+    <string name="msg_read_call_log_permission_denied">Without the read call log permission the app is unable to display caller info. Are you sure you want to deny this permission?</string>
+    <string name="msg_read_call_log_permission">The application requires read call log permission for display caller info. Can you allow read call log permission?</string>
+    <string name="msg_system_alert_window_permission_denied">Without the change wifi state permission the app is unable to display caller info. Are you sure you want to deny this permission?</string>
+    <string name="msg_phone_read_sms_permission">The application require SMS permission.Can you allow the permission? </string>
+    <string name="msg_phone_read_sms_permission_denied">Without this permission the app is unable to read message. Are you sure you want to deny this permission?</string>
+    <string name="msg_phone_state_permission_denied">Without the phone state permission the app is unable to record audio. Are you sure you want to deny this permission?</string>
+    <string name="msg_phone_state_permission">The application requires phone state permission to record call. Can you allow microphone permission?</string>
+
+    <string name="action_yes">Yes</string>
+    <string name="action_no">No</string>
+    <string name="action_ok">Ok</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_Add">Add</string>
+    <string name="action_Next">Next</string>
+    <string name="action_retry">Retry</string>
+    <string name="btn_login_again">Login Again</string>
+    <string name="action_save">Save</string>
+
+
+    <string name="logout">Logout</string>
+    <string name="msg_logout_confirmation">Are you sure?</string>
+    <string name="msg_network_error">Network Error!</string>
+    <string name="msg_server_error">Server Error!</string>
+
+
 </resources>

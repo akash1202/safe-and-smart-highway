@@ -18,7 +18,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
-    <uses-permission android:name="android.permission.REAL_GET_TASKS"/>
+    <!--<uses-permission android:name="android.permission.REAL_GET_TASKS"/>-->
     <uses-feature android:name="android.hardware.location.gps" />
         <application
         android:allowBackup="true"
@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".LoginActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -65,15 +65,15 @@
         <activity
             android:name=".Register"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".verify_number">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <activity android:name=".VerifyNumberActivity">
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </activity>
         <activity
-            android:name=".testIt"
+            android:name=".MyHighwayActivity"
             android:label="SSHS"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar">
@@ -111,12 +111,11 @@
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".ChatActivity"
+            android:name=".user.ChatActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.spport.PARENT_ACTIVITY"
@@ -136,15 +135,15 @@
                 <category android:name="android.intent.category.BROWSABLE" />
             </intent-filter>
         </activity>
+            <activity
+                android:name=".AboutusActivity"
+                android:parentActivityName=".MyHighwayActivity">
+                <meta-data
+                    android:name="android.spport.PARENT_ACTIVITY"
+                    android:value=".testIt" />
+            </activity>
         <activity
-            android:name=".Aboutus"
-            android:parentActivityName=".testIt">
-            <meta-data
-                android:name="android.spport.PARENT_ACTIVITY"
-                android:value=".testIt" />
-        </activity>
-        <activity
-            android:name=".Friends"
+            android:name=".user.FriendsActivity"
             android:label="Friends"/>
             <!--android:theme="@style/AppTheme.NoActionBar" />-->
 
@@ -165,35 +164,35 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".Dashboard"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.spport.PARENT_ACTIVITY"
-                android:value=".testIt" />
-        </activity>
-        <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
-            android:theme="@style/Base.Theme.AppCompat" />
-        <activity android:name=".MyDevices" />
-        <activity android:name=".MyVehicle" />
-        <activity android:name=".MyHistory">
-            <meta-data
-                android:name="android.app.searchable"
-                android:resource="@xml/searchable" />
+            <activity
+                android:name=".DashboardActivity"
+                android:theme="@style/AppTheme.NoActionBar">
+                <meta-data
+                    android:name="android.spport.PARENT_ACTIVITY"
+                    android:value=".testIt" />
+            </activity>
+            <activity
+                android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+                android:theme="@style/Base.Theme.AppCompat" />
+            <activity android:name=".user.MyDevices" />
+            <activity android:name=".user.MyVehicles" />
+            <activity android:name=".user.MyHistoryActivity">
+                <meta-data
+                    android:name="android.app.searchable"
+                    android:resource="@xml/searchable" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.SEARCH" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <intent-filter>
+                    <action android:name="android.intent.action.SEARCH" />
+                </intent-filter>
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
+                    <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity android:name=".Forum" />
         <activity
-            android:name=".Alert"
+            android:name=".AlertActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.spport.PARENT_ACTIVITY"
@@ -213,24 +212,28 @@
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/colorWhatsapp" />
 
-        <activity android:name=".ForgetPassword">
-            <meta-data
-                android:name="android.spport.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            <activity android:name=".ForgetPasswordActivity">
+                <meta-data
+                    android:name="android.spport.PARENT_ACTIVITY"
+                    android:value=".MainActivity" />
 
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <intent-filter>
+                    <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
+                    <category android:name="android.intent.category.DEFAULT" />
+                </intent-filter>
+            </activity>
+            <activity
+                android:name=".SettingsActivity"
+                android:label="@string/title_activity_settings" />
+
             <service
                 android:name=".FloatingView"
                 android:enabled="true"
-                android:exported="false"/>
-    </application>
-
+                android:exported="false" />
+            <provider
+                android:authorities="akash.example.com.myhighway1"
+                android:name=".MyDBFlowDatabase_Provider"
+                android:exported="false" />
+        </application>
 </manifest>

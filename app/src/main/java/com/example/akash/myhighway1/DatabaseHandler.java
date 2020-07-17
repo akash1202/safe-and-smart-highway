@@ -5,7 +5,8 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import com.example.akash.myhighway1.Friends.MyContact;
+
+import com.example.akash.myhighway1.user.FriendsActivity.MyContact;
 
 import java.util.ArrayList;
 import java.util.List;

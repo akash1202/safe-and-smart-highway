@@ -151,8 +151,8 @@ public class Register extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),""
                             +s3,Toast.LENGTH_SHORT).show();
                     if(s3.equals("Registered Successfully!!")) {
-                       Intent i1 = new Intent(getApplicationContext(), testIt.class);
-                        SharedPreferences.Editor editor=sharedPreferences.edit();
+                       Intent i1 = new Intent(getApplicationContext(), MyHighwayActivity.class);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
                         i1.putExtra("email",email.getText().toString().trim().toLowerCase());
                         i1.putExtra("mobile",mobile.getText().toString().trim().toLowerCase());
                         //editor.putString("userEmailkey",email.getText().toString().trim().toLowerCase());
