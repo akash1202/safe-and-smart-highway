@@ -9,10 +9,10 @@
 * user can see last seen as well as last location of his/her friend in home screen.
 * user can mark a problem as solved any time after creating an alert and it remains active even after closing an application.
 
-<img alt='Login_page' src='images/loginpage.png' width=175px height=300px/>)
-<img alt='Navigation_Drawer' src='images/navigation_drawer.png' width=175px height=300px/>)
-<img alt='Home_page' src='images/homepage.png' width=175px height=300px/>)
-<img alt='Group_chat_panel' src='images/group_chat_panel.png' width=175px height=300px/>)
-<img alt='Help request_notification' src='images/help_request_notification.png' width=175px height=300px/>)
-<img alt='Search_Nearby_HelpCenter' src='images/search_nearby_help_center.png' width=175px height=300px/>)
-<img alt='speedometer_with_friendslist' src='images/speedometer_with_friendslist.png' width=175px height=300px/>)
+<img alt='Login_page' src='images/loginpage.png' width=175px height=300px/>
+<img alt='Navigation_Drawer' src='images/navigation_drawer.png' width=175px height=300px/>
+<img alt='Home_page' src='images/homepage.png' width=175px height=300px/>
+<img alt='Group_chat_panel' src='images/group_chat_panel.png' width=175px height=300px/>
+<img alt='Help request_notification' src='images/help_request_notification.png' width=175px height=300px/>
+<img alt='Search_Nearby_HelpCenter' src='images/search_nearby_help_center.png' width=175px height=300px/>
+<img alt='speedometer_with_friendslist' src='images/speedometer_with_friendslist.png' width=175px height=300px/>
